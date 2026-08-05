@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Juguetería Mágica - Los mejores juguetes, juegos de mesa y peluches al mejor precio.">
+    <title>Juguetería Mágica | Tienda de Juguetes Online</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <!-- Top Notice Bar -->
+    <div class="top-bar">
+        <span>🚀 Envíos gratis por compras mayores a S/ 150 | 🎁 ¡Regalo sorpresa en cada pedido!</span>
+    </div>
+
+    <!-- Main Navigation Header -->
+    <header class="navbar">
+        <div class="container navbar-content">
+            <a href="#" class="brand-logo">
+                <span class="logo-icon">🧸</span>
+                <div class="logo-text">
+                    <span class="brand-name">JUGUETERÍA</span>
+                    <span class="brand-sub">Mágica</span>
+                </div>
+            </a>
+
+            <!-- Search Bar -->
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                <input type="text" id="search-input" placeholder="Buscar juguetes, juegos, carros..." autocomplete="off">
+                <button id="search-btn" class="btn-search">Buscar</button>
+            </div>
+
+            <!-- Header Actions -->
+            <div class="header-actions">
+                <button id="btn-open-admin" class="btn-icon-label" title="Agregar nuevo juguete">
+                    <i class="fa-solid fa-plus-circle"></i>
+                    <span>Nuevo Juguete</span>
+                </button>
+
+                <button id="btn-open-cart" class="cart-btn" title="Ver Carrito de Compras">
+                    <i class="fa-solid fa-basket-shopping"></i>
+                    <span class="cart-label">Carrito</span>
+                    <span id="cart-count-badge" class="badge">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Banner -->
+    <section class="hero">
+        <div class="container hero-content">
+            <div class="hero-text">
+                <span class="hero-badge">✨ Colección 2026 ✨</span>
+                <h1>¡Donde la Diversión y la Magia Cobran Vida!</h1>
+                <p>Descubre nuestra selección de peluches, vehículos a control remoto, robots educativos y juegos para toda la familia.</p>
+                <div class="hero-buttons">
+                    <a href="#catalog-section" class="btn btn-primary">Explorar Catálogo <i class="fa-solid fa-arrow-down"></i></a>
+                </div>
+            </div>
+            <div class="hero-illustration">
+                <div class="floating-card c1">🚀 <span>Novedades Espaciales</span></div>
+                <div class="floating-card c2">🧸 <span>Peluches Hipoalergénicos</span></div>
+                <div class="floating-card c3">⚡ <span>Envío Exprés</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Catalog Section -->
+    <main id="catalog-section" class="container catalog-container">
+        
+        <!-- Filter Controls -->
+        <div class="catalog-header">
+            <div class="section-title">
+                <h2>Catálogo de Juguetes</h2>
+                <p id="results-count">Cargando productos...</p>
+            </div>
+
+            <!-- Categories Filter Pills -->
+            <div class="categories-bar" id="categories-bar">
+                <button class="cat-pill active" data-category="ALL">Todos</button>
+                <button class="cat-pill" data-category="Peluches">🧸 Peluches</button>
+                <button class="cat-pill" data-category="Vehículos">🚗 Vehículos</button>
+                <button class="cat-pill" data-category="Construcción">🧱 Construcción</button>
+                <button class="cat-pill" data-category="Educativos">🤖 Educativos</button>
+                <button class="cat-pill" data-category="Juegos de Mesa">🎲 Juegos de Mesa</button>
+                <button class="cat-pill" data-category="Muñecas">👑 Muñecas</button>
+            </div>
+        </div>
+
+        <!-- Products Grid Container -->
+        <div id="products-grid" class="products-grid">
+            <!-- Dynamic JS product cards inserted here -->
+        </div>
+
+        <!-- Empty / No Results State -->
+        <div id="no-results" class="no-results hidden">
+            <div class="no-results-icon">🧩</div>
+            <h3>No encontramos juguetes con esa búsqueda</h3>
+            <p>Intenta buscando con otra palabra o selecciona una categoría diferente.</p>
+            <button id="reset-filters-btn" class="btn btn-secondary">Ver Todos los Juguetes</button>
+        </div>
+    </main>
+
+    <!-- Shopping Cart Drawer Overlay -->
+    <div id="cart-overlay" class="overlay hidden"></div>
+
+    <!-- Shopping Cart Sidebar -->
+    <aside id="cart-drawer" class="cart-drawer hidden">
+        <div class="cart-header">
+            <div class="cart-title">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <h3>Tu Carrito de Compras</h3>
+            </div>
+            <button id="btn-close-cart" class="btn-close">&times;</button>
+        </div>
+
+        <div id="cart-items-list" class="cart-items-list">
+            <!-- Dynamic cart items rendered here -->
+        </div>
+
+        <div class="cart-footer">
+            <div class="summary-row">
+                <span>Total de items:</span>
+                <strong id="cart-total-items">0</strong>
+            </div>
+            <div class="summary-row total-row">
+                <span>Total a pagar:</span>
+                <strong id="cart-total-price">S/ 0.00</strong>
+            </div>
+
+            <div class="cart-actions">
+                <button id="btn-clear-cart" class="btn btn-danger-outline">
+                    <i class="fa-solid fa-trash-can"></i> Vaciar Carrito
+                </button>
+                <button id="btn-checkout" class="btn btn-success">
+                    <i class="fa-solid fa-credit-card"></i> Finalizar Compra
+                </button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Admin / Create Product Modal Overlay -->
+    <div id="admin-modal" class="modal-backdrop hidden">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 id="modal-title">Agregar Nuevo Juguete</h3>
+                <button id="btn-close-modal" class="btn-close">&times;</button>
+            </div>
+            <form id="product-form" class="product-form">
+                <input type="hidden" id="product-id">
+
+                <div class="form-group">
+                    <label for="product-nombre">Nombre del Juguete *</label>
+                    <input type="text" id="product-nombre" required placeholder="Ej. Pista de Carreras Loop Turbo">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="product-categoria">Categoría *</label>
+                        <select id="product-categoria" required>
+                            <option value="Peluches">Peluches</option>
+                            <option value="Vehículos">Vehículos</option>
+                            <option value="Construcción">Construcción</option>
+                            <option value="Educativos">Educativos</option>
+                            <option value="Juegos de Mesa">Juegos de Mesa</option>
+                            <option value="Muñecas">Muñecas</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="product-precio">Precio (S/) *</label>
+                        <input type="number" id="product-precio" step="0.01" min="0" required placeholder="89.90">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="product-stock">Stock Disponible *</label>
+                        <input type="number" id="product-stock" min="0" required placeholder="15">
+                    </div>
+                    <div class="form-group">
+                        <label for="product-imagen">URL de Imagen</label>
+                        <input type="url" id="product-imagen" placeholder="https://images.unsplash.com/...">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="product-descripcion">Descripción del Juguete</label>
+                    <textarea id="product-descripcion" rows="3" placeholder="Describe las características principales..."></textarea>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" id="btn-cancel-modal" class="btn btn-secondary">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar Juguete</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container footer-content">
+            <div class="footer-brand">
+                <span class="logo-icon">🧸</span>
+                <h3>Juguetería Mágica</h3>
+                <p>La mejor tienda online de juguetes en Perú. Calidad, diversión y sonrisas garantizadas.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Enlaces Rápidos</h4>
+                <ul>
+                    <li><a href="#catalog-section">Catálogo de Juguetes</a></li>
+                    <li><a href="http://localhost:8080/h2-console" target="_blank">Consola H2 Database</a></li>
+                    <li><a href="http://localhost:8080/api/products" target="_blank">REST API Productos JSON</a></li>
+                </ul>
+            </div>
+            <div class="footer-copy">
+                <p>&copy; 2026 Juguetería Mágica. Todos los derechos reservados. Desarrollado con Spring Boot & Fetch API.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Custom JS -->
+    <script src="js/app.js"></script>
+</body>
+</html>
