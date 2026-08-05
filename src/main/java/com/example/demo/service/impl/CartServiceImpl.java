@@ -13,18 +13,20 @@ import com.example.demo.model.ShoppingCart;
 import com.example.demo.repository.ProductRepository;
 import com.example.demo.service.CartService;
 import jakarta.servlet.http.HttpSession;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class CartServiceImpl implements CartService {
 
     private static final String CART_SESSION_KEY = "SHOPPING_CART";
     private final ProductRepository productRepository;
+
+    public CartServiceImpl(ProductRepository productRepository) {
+        this.productRepository = productRepository;
+    }
 
     @Override
     public CartSummaryDTO getCart(HttpSession session) {
@@ -96,7 +98,6 @@ public class CartServiceImpl implements CartService {
             throw new BadRequestException("El carrito está vacío, no se puede procesar la compra.");
         }
 
-        // Descontar stock de productos
         for (CartItem item : cart.getItems()) {
             Product product = productRepository.findById(item.getProduct().getId())
                     .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado durante la compra"));
@@ -108,7 +109,7 @@ public class CartServiceImpl implements CartService {
         }
 
         CartSummaryDTO summary = mapToCartSummaryDTO(cart);
-        cart.clear(); // Limpiar el carrito tras compra exitosa
+        cart.clear();
         return summary;
     }
 
@@ -123,29 +124,29 @@ public class CartServiceImpl implements CartService {
 
     private CartSummaryDTO mapToCartSummaryDTO(ShoppingCart cart) {
         List<CartItemDTO> itemDTOs = cart.getItems().stream()
-                .map(item -> CartItemDTO.builder()
-                        .product(mapProductToDTO(item.getProduct()))
-                        .cantidad(item.getCantidad())
-                        .subtotal(item.getSubtotal())
-                        .build())
+                .map(item -> new CartItemDTO(
+                        mapProductToDTO(item.getProduct()),
+                        item.getCantidad(),
+                        item.getSubtotal()
+                ))
                 .collect(Collectors.toList());
 
-        return CartSummaryDTO.builder()
-                .items(itemDTOs)
-                .total(cart.getTotal())
-                .totalItems(cart.getTotalItemCount())
-                .build();
+        return new CartSummaryDTO(
+                itemDTOs,
+                cart.getTotal(),
+                cart.getTotalItemCount()
+        );
     }
 
     private ProductDTO mapProductToDTO(Product product) {
-        return ProductDTO.builder()
-                .id(product.getId())
-                .nombre(product.getNombre())
-                .descripcion(product.getDescripcion())
-                .precio(product.getPrecio())
-                .stock(product.getStock())
-                .categoria(product.getCategoria())
-                .imagenUrl(product.getImagenUrl())
-                .build();
+        return new ProductDTO(
+                product.getId(),
+                product.getNombre(),
+                product.getDescripcion(),
+                product.getPrecio(),
+                product.getStock(),
+                product.getCategoria(),
+                product.getImagenUrl()
+        );
     }
 }

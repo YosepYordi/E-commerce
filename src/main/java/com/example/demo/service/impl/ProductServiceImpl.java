@@ -6,7 +6,6 @@ import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.model.Product;
 import com.example.demo.repository.ProductRepository;
 import com.example.demo.service.ProductService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,10 +13,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
+
+    public ProductServiceImpl(ProductRepository productRepository) {
+        this.productRepository = productRepository;
+    }
 
     @Override
     @Transactional(readOnly = true)
@@ -55,7 +57,7 @@ public class ProductServiceImpl implements ProductService {
         validateProductDTO(productDTO);
 
         Product product = mapToEntity(productDTO);
-        product.setId(null); // asegurar generación de nuevo ID
+        product.setId(null);
         Product savedProduct = productRepository.save(product);
 
         return mapToDTO(savedProduct);
@@ -105,26 +107,26 @@ public class ProductServiceImpl implements ProductService {
     }
 
     private ProductDTO mapToDTO(Product product) {
-        return ProductDTO.builder()
-                .id(product.getId())
-                .nombre(product.getNombre())
-                .descripcion(product.getDescripcion())
-                .precio(product.getPrecio())
-                .stock(product.getStock())
-                .categoria(product.getCategoria())
-                .imagenUrl(product.getImagenUrl())
-                .build();
+        return new ProductDTO(
+                product.getId(),
+                product.getNombre(),
+                product.getDescripcion(),
+                product.getPrecio(),
+                product.getStock(),
+                product.getCategoria(),
+                product.getImagenUrl()
+        );
     }
 
     private Product mapToEntity(ProductDTO dto) {
-        return Product.builder()
-                .id(dto.getId())
-                .nombre(dto.getNombre())
-                .descripcion(dto.getDescripcion())
-                .precio(dto.getPrecio())
-                .stock(dto.getStock())
-                .categoria(dto.getCategoria())
-                .imagenUrl(dto.getImagenUrl())
-                .build();
+        return new Product(
+                dto.getId(),
+                dto.getNombre(),
+                dto.getDescripcion(),
+                dto.getPrecio(),
+                dto.getStock(),
+                dto.getCategoria(),
+                dto.getImagenUrl()
+        );
     }
 }

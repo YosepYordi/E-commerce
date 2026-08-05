@@ -5,17 +5,19 @@ import com.example.demo.dto.CartSummaryDTO;
 import com.example.demo.dto.UpdateCartRequest;
 import com.example.demo.service.CartService;
 import jakarta.servlet.http.HttpSession;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/cart")
-@RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 public class CartController {
 
     private final CartService cartService;
+
+    public CartController(CartService cartService) {
+        this.cartService = cartService;
+    }
 
     @GetMapping
     public ResponseEntity<CartSummaryDTO> getCart(HttpSession session) {
