@@ -3,169 +3,196 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Juguetería Mágica - Los mejores juguetes, juegos de mesa y peluches al mejor precio.">
-    <title>Juguetería Mágica | Tienda de Juguetes Online</title>
-    <!-- Google Fonts -->
+    <meta name="description" content="Plataforma de Comercio Electrónico - Sistema de Gestión de Productos y Ventas en Línea.">
+    <title>E-Commerce Store | Panel de Administración y Catálogo</title>
+    <!-- Google Fonts: Plus Jakarta Sans & Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- FontAwesome Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome 6 Pro Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
 
-    <!-- Top Notice Bar -->
-    <div class="top-bar">
-        <span>🚀 Envíos gratis por compras mayores a S/ 150 | 🎁 ¡Regalo sorpresa en cada pedido!</span>
+    <!-- Top Announcement Bar -->
+    <div class="top-announcement">
+        <div class="container announcement-content">
+            <span><i class="fa-solid fa-truck-fast"></i> Envíos nacionales garantizados &bull; Atención 24/7 &bull; Garantía oficial</span>
+            <div class="top-links">
+                <a href="http://localhost:8080/api/products" target="_blank"><i class="fa-solid fa-code"></i> REST API JSON</a>
+                <a href="http://localhost:8080/h2-console" target="_blank"><i class="fa-solid fa-database"></i> H2 Console</a>
+            </div>
+        </div>
     </div>
 
     <!-- Main Navigation Header -->
     <header class="navbar">
         <div class="container navbar-content">
             <a href="#" class="brand-logo">
-                <span class="logo-icon">🧸</span>
+                <div class="logo-badge"><i class="fa-solid fa-bag-shopping"></i></div>
                 <div class="logo-text">
-                    <span class="brand-name">JUGUETERÍA</span>
-                    <span class="brand-sub">Mágica</span>
+                    <span class="brand-name">NEXUS</span>
+                    <span class="brand-sub">STORE & ADMINISTRATION</span>
                 </div>
             </a>
 
-            <!-- Search Bar -->
+            <!-- Professional Search Bar -->
             <div class="search-box">
                 <i class="fa-solid fa-magnifying-glass search-icon"></i>
-                <input type="text" id="search-input" placeholder="Buscar juguetes, juegos, carros..." autocomplete="off">
-                <button id="search-btn" class="btn-search">Buscar</button>
+                <input type="text" id="search-input" placeholder="Buscar por nombre, código o descripción..." autocomplete="off">
+                <button id="search-btn" class="btn-search">
+                    <i class="fa-solid fa-sliders"></i> Buscar
+                </button>
             </div>
 
-            <!-- Header Actions -->
+            <!-- Action Controls -->
             <div class="header-actions">
-                <button id="btn-open-admin" class="btn-icon-label" title="Agregar nuevo juguete">
-                    <i class="fa-solid fa-plus-circle"></i>
-                    <span>Nuevo Juguete</span>
+                <button id="btn-open-admin" class="btn-action admin-btn" title="Gestión de Inventario">
+                    <i class="fa-solid fa-square-plus"></i>
+                    <span>Nuevo Producto</span>
                 </button>
 
-                <button id="btn-open-cart" class="cart-btn" title="Ver Carrito de Compras">
-                    <i class="fa-solid fa-basket-shopping"></i>
-                    <span class="cart-label">Carrito</span>
+                <button id="btn-open-cart" class="btn-action cart-btn" title="Ver Carrito de Compras">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span>Carrito</span>
                     <span id="cart-count-badge" class="badge">0</span>
                 </button>
             </div>
         </div>
     </header>
 
-    <!-- Hero Banner -->
+    <!-- Professional Hero Banner -->
     <section class="hero">
         <div class="container hero-content">
             <div class="hero-text">
-                <span class="hero-badge">✨ Colección 2026 ✨</span>
-                <h1>¡Donde la Diversión y la Magia Cobran Vida!</h1>
-                <p>Descubre nuestra selección de peluches, vehículos a control remoto, robots educativos y juegos para toda la familia.</p>
-                <div class="hero-buttons">
-                    <a href="#catalog-section" class="btn btn-primary">Explorar Catálogo <i class="fa-solid fa-arrow-down"></i></a>
+                <span class="hero-tag"><i class="fa-solid fa-shield-halved"></i> Plataforma Oficial v4.0</span>
+                <h1>Gestión Integral de Catálogo & Comercio Electrónico</h1>
+                <p>Consumo eficiente de servicios REST mediante Fetch API con arquitectura Spring Boot & JPA.</p>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <span class="stat-number"><i class="fa-solid fa-server"></i> API REST</span>
+                        <span class="stat-label">EndPoints Integrados</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number"><i class="fa-solid fa-bolt"></i> Fetch API</span>
+                        <span class="stat-label">Sincronización Asíncrona</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number"><i class="fa-solid fa-layer-group"></i> CRUD Full</span>
+                        <span class="stat-label">Módulo de Administración</span>
+                    </div>
                 </div>
-            </div>
-            <div class="hero-illustration">
-                <div class="floating-card c1">🚀 <span>Novedades Espaciales</span></div>
-                <div class="floating-card c2">🧸 <span>Peluches Hipoalergénicos</span></div>
-                <div class="floating-card c3">⚡ <span>Envío Exprés</span></div>
             </div>
         </div>
     </section>
 
-    <!-- Main Catalog Section -->
+    <!-- Main Content Section -->
     <main id="catalog-section" class="container catalog-container">
         
-        <!-- Filter Controls -->
-        <div class="catalog-header">
-            <div class="section-title">
-                <h2>Catálogo de Juguetes</h2>
-                <p id="results-count">Cargando productos...</p>
+        <!-- Admin & Filter Toolbar -->
+        <div class="toolbar-card">
+            <div class="toolbar-header">
+                <div class="toolbar-title">
+                    <h2><i class="fa-solid fa-boxes-stacked"></i> Catálogo de Productos</h2>
+                    <p id="results-count">Cargando catálogo...</p>
+                </div>
+                <div class="toolbar-actions">
+                    <button id="reset-filters-btn" class="btn-secondary-sm">
+                        <i class="fa-solid fa-rotate-left"></i> Restablecer Filtros
+                    </button>
+                </div>
             </div>
 
             <!-- Categories Filter Pills -->
             <div class="categories-bar" id="categories-bar">
-                <button class="cat-pill active" data-category="ALL">Todos</button>
-                <button class="cat-pill" data-category="Peluches">🧸 Peluches</button>
-                <button class="cat-pill" data-category="Vehículos">🚗 Vehículos</button>
-                <button class="cat-pill" data-category="Construcción">🧱 Construcción</button>
-                <button class="cat-pill" data-category="Educativos">🤖 Educativos</button>
-                <button class="cat-pill" data-category="Juegos de Mesa">🎲 Juegos de Mesa</button>
-                <button class="cat-pill" data-category="Muñecas">👑 Muñecas</button>
+                <button class="cat-pill active" data-category="ALL"><i class="fa-solid fa-border-all"></i> Todos</button>
+                <button class="cat-pill" data-category="Peluches"><i class="fa-solid fa-cubes"></i> Peluches</button>
+                <button class="cat-pill" data-category="Vehículos"><i class="fa-solid fa-car-side"></i> Vehículos</button>
+                <button class="cat-pill" data-category="Construcción"><i class="fa-solid fa-shapes"></i> Construcción</button>
+                <button class="cat-pill" data-category="Educativos"><i class="fa-solid fa-graduation-cap"></i> Educativos</button>
+                <button class="cat-pill" data-category="Juegos de Mesa"><i class="fa-solid fa-chess"></i> Juegos de Mesa</button>
+                <button class="cat-pill" data-category="Muñecas"><i class="fa-solid fa-wand-magic-sparkles"></i> Muñecas</button>
             </div>
         </div>
 
-        <!-- Products Grid Container -->
+        <!-- Dynamic Products Grid -->
         <div id="products-grid" class="products-grid">
-            <!-- Dynamic JS product cards inserted here -->
+            <!-- Dynamic product cards populated via JS -->
         </div>
 
-        <!-- Empty / No Results State -->
+        <!-- Empty State -->
         <div id="no-results" class="no-results hidden">
-            <div class="no-results-icon">🧩</div>
-            <h3>No encontramos juguetes con esa búsqueda</h3>
-            <p>Intenta buscando con otra palabra o selecciona una categoría diferente.</p>
-            <button id="reset-filters-btn" class="btn btn-secondary">Ver Todos los Juguetes</button>
+            <div class="no-results-icon"><i class="fa-solid fa-folder-open"></i></div>
+            <h3>No se encontraron productos registrados</h3>
+            <p>Intente ajustar el filtro de búsqueda o agregue un nuevo registro desde el panel de administración.</p>
         </div>
     </main>
 
-    <!-- Shopping Cart Drawer Overlay -->
+    <!-- Shopping Cart Overlay -->
     <div id="cart-overlay" class="overlay hidden"></div>
 
-    <!-- Shopping Cart Sidebar -->
+    <!-- Shopping Cart Drawer Sidebar -->
     <aside id="cart-drawer" class="cart-drawer hidden">
         <div class="cart-header">
             <div class="cart-title">
                 <i class="fa-solid fa-cart-shopping"></i>
-                <h3>Tu Carrito de Compras</h3>
+                <div>
+                    <h3>Carrito de Compras</h3>
+                    <small>Resumen de orden activa</small>
+                </div>
             </div>
-            <button id="btn-close-cart" class="btn-close">&times;</button>
+            <button id="btn-close-cart" class="btn-close"><i class="fa-solid fa-xmark"></i></button>
         </div>
 
         <div id="cart-items-list" class="cart-items-list">
-            <!-- Dynamic cart items rendered here -->
+            <!-- Items rendered dynamically -->
         </div>
 
         <div class="cart-footer">
             <div class="summary-row">
-                <span>Total de items:</span>
+                <span>Items seleccionados:</span>
                 <strong id="cart-total-items">0</strong>
             </div>
             <div class="summary-row total-row">
-                <span>Total a pagar:</span>
+                <span>Monto Total:</span>
                 <strong id="cart-total-price">S/ 0.00</strong>
             </div>
 
             <div class="cart-actions">
-                <button id="btn-clear-cart" class="btn btn-danger-outline">
+                <button id="btn-clear-cart" class="btn-outline-danger">
                     <i class="fa-solid fa-trash-can"></i> Vaciar Carrito
                 </button>
-                <button id="btn-checkout" class="btn btn-success">
-                    <i class="fa-solid fa-credit-card"></i> Finalizar Compra
+                <button id="btn-checkout" class="btn-primary-block">
+                    <i class="fa-solid fa-credit-card"></i> Procesar Orden de Compra
                 </button>
             </div>
         </div>
     </aside>
 
-    <!-- Admin / Create Product Modal Overlay -->
+    <!-- Admin / Product Creation & Editing Modal -->
     <div id="admin-modal" class="modal-backdrop hidden">
         <div class="modal-card">
             <div class="modal-header">
-                <h3 id="modal-title">Agregar Nuevo Juguete</h3>
-                <button id="btn-close-modal" class="btn-close">&times;</button>
+                <div class="modal-header-title">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                    <h3 id="modal-title">Agregar Nuevo Producto</h3>
+                </div>
+                <button id="btn-close-modal" class="btn-close"><i class="fa-solid fa-xmark"></i></button>
             </div>
+            
             <form id="product-form" class="product-form">
                 <input type="hidden" id="product-id">
 
                 <div class="form-group">
-                    <label for="product-nombre">Nombre del Juguete *</label>
-                    <input type="text" id="product-nombre" required placeholder="Ej. Pista de Carreras Loop Turbo">
+                    <label for="product-nombre">Nombre del Producto <span class="required">*</span></label>
+                    <input type="text" id="product-nombre" required placeholder="Ej. Pista de Carreras Profesional">
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="product-categoria">Categoría *</label>
+                        <label for="product-categoria">Categoría <span class="required">*</span></label>
                         <select id="product-categoria" required>
                             <option value="Peluches">Peluches</option>
                             <option value="Vehículos">Vehículos</option>
@@ -176,56 +203,50 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="product-precio">Precio (S/) *</label>
+                        <label for="product-precio">Precio Unitario (S/) <span class="required">*</span></label>
                         <input type="number" id="product-precio" step="0.01" min="0" required placeholder="89.90">
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="product-stock">Stock Disponible *</label>
+                        <label for="product-stock">Unidades en Stock <span class="required">*</span></label>
                         <input type="number" id="product-stock" min="0" required placeholder="15">
                     </div>
                     <div class="form-group">
-                        <label for="product-imagen">URL de Imagen</label>
+                        <label for="product-imagen">URL de la Imagen del Producto</label>
                         <input type="url" id="product-imagen" placeholder="https://images.unsplash.com/...">
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="product-descripcion">Descripción del Juguete</label>
-                    <textarea id="product-descripcion" rows="3" placeholder="Describe las características principales..."></textarea>
+                    <label for="product-descripcion">Descripción y Especificaciones</label>
+                    <textarea id="product-descripcion" rows="3" placeholder="Ingrese detalles técnicos, material, dimensiones..."></textarea>
                 </div>
 
                 <div class="modal-actions">
-                    <button type="button" id="btn-cancel-modal" class="btn btn-secondary">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Guardar Juguete</button>
+                    <button type="button" id="btn-cancel-modal" class="btn-modal-cancel">Cancelar</button>
+                    <button type="submit" class="btn-modal-submit">
+                        <i class="fa-solid fa-floppy-disk"></i> Guardar Registro
+                    </button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Toast Notification Container -->
+    <!-- Toast Notifications -->
     <div id="toast-container" class="toast-container"></div>
 
     <!-- Footer -->
     <footer class="footer">
         <div class="container footer-content">
             <div class="footer-brand">
-                <span class="logo-icon">🧸</span>
-                <h3>Juguetería Mágica</h3>
-                <p>La mejor tienda online de juguetes en Perú. Calidad, diversión y sonrisas garantizadas.</p>
-            </div>
-            <div class="footer-links">
-                <h4>Enlaces Rápidos</h4>
-                <ul>
-                    <li><a href="#catalog-section">Catálogo de Juguetes</a></li>
-                    <li><a href="http://localhost:8080/h2-console" target="_blank">Consola H2 Database</a></li>
-                    <li><a href="http://localhost:8080/api/products" target="_blank">REST API Productos JSON</a></li>
-                </ul>
+                <div class="logo-badge-sm"><i class="fa-solid fa-bag-shopping"></i></div>
+                <h3>NEXUS STORE & MANAGEMENT</h3>
+                <p>Módulo de Administración e Integración REST Fetch API para Comercio Electrónico.</p>
             </div>
             <div class="footer-copy">
-                <p>&copy; 2026 Juguetería Mágica. Todos los derechos reservados. Desarrollado con Spring Boot & Fetch API.</p>
+                <p>&copy; 2026 NEXUS E-Commerce System &bull; Desarrollado para Fase 4: Frontend Fetch y Administración.</p>
             </div>
         </div>
     </footer>
