@@ -1,6 +1,7 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.dto.ProductDTO;
+import com.example.demo.dto.ProductRequest;
 import com.example.demo.exception.BadRequestException;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.model.Product;
@@ -9,6 +10,7 @@ import com.example.demo.service.ProductService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -53,11 +55,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public ProductDTO createProduct(ProductDTO productDTO) {
-        validateProductDTO(productDTO);
+    public ProductDTO createProduct(ProductRequest productRequest) {
+        validateProductRequest(productRequest);
 
-        Product product = mapToEntity(productDTO);
-        product.setId(null);
+        Product product = mapToEntity(productRequest);
         Product savedProduct = productRepository.save(product);
 
         return mapToDTO(savedProduct);
@@ -65,18 +66,18 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public ProductDTO updateProduct(Long id, ProductDTO productDTO) {
+    public ProductDTO updateProduct(Long id, ProductRequest productRequest) {
         Product existingProduct = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con ID: " + id));
 
-        validateProductDTO(productDTO);
+        validateProductRequest(productRequest);
 
-        existingProduct.setNombre(productDTO.getNombre());
-        existingProduct.setDescripcion(productDTO.getDescripcion());
-        existingProduct.setPrecio(productDTO.getPrecio());
-        existingProduct.setStock(productDTO.getStock());
-        existingProduct.setCategoria(productDTO.getCategoria());
-        existingProduct.setImagenUrl(productDTO.getImagenUrl());
+        existingProduct.setNombre(productRequest.getNombre());
+        existingProduct.setDescripcion(productRequest.getDescripcion());
+        existingProduct.setPrecio(productRequest.getPrecio());
+        existingProduct.setStock(productRequest.getStock());
+        existingProduct.setCategoria(productRequest.getCategoria());
+        existingProduct.setImagenUrl(productRequest.getImagenUrl());
 
         Product updatedProduct = productRepository.save(existingProduct);
         return mapToDTO(updatedProduct);
@@ -91,17 +92,26 @@ public class ProductServiceImpl implements ProductService {
         productRepository.deleteById(id);
     }
 
-    private void validateProductDTO(ProductDTO dto) {
-        if (dto.getNombre() == null || dto.getNombre().isBlank()) {
+    private void validateProductRequest(ProductRequest request) {
+        if (request == null) {
+            throw new BadRequestException("El producto es obligatorio");
+        }
+        if (request.getNombre() == null || request.getNombre().isBlank()) {
             throw new BadRequestException("El nombre del producto es obligatorio");
         }
-        if (dto.getPrecio() == null || dto.getPrecio().doubleValue() < 0) {
+        if (request.getNombre().length() > 120) {
+            throw new BadRequestException("El nombre no puede superar los 120 caracteres");
+        }
+        if (request.getDescripcion() != null && request.getDescripcion().length() > 1000) {
+            throw new BadRequestException("La descripción no puede superar los 1000 caracteres");
+        }
+        if (request.getPrecio() == null || request.getPrecio().compareTo(BigDecimal.ZERO) < 0) {
             throw new BadRequestException("El precio debe ser mayor o igual a 0");
         }
-        if (dto.getStock() == null || dto.getStock() < 0) {
-            throw new BadRequestException("El stock no puede ser negativo");
+        if (request.getStock() == null || request.getStock() < 0) {
+            throw new BadRequestException("El stock debe ser mayor o igual a 0");
         }
-        if (dto.getCategoria() == null || dto.getCategoria().isBlank()) {
+        if (request.getCategoria() == null || request.getCategoria().isBlank()) {
             throw new BadRequestException("La categoría es obligatoria");
         }
     }
@@ -118,15 +128,14 @@ public class ProductServiceImpl implements ProductService {
         );
     }
 
-    private Product mapToEntity(ProductDTO dto) {
+    private Product mapToEntity(ProductRequest request) {
         return new Product(
-                dto.getId(),
-                dto.getNombre(),
-                dto.getDescripcion(),
-                dto.getPrecio(),
-                dto.getStock(),
-                dto.getCategoria(),
-                dto.getImagenUrl()
+                request.getNombre(),
+                request.getDescripcion(),
+                request.getPrecio(),
+                request.getStock(),
+                request.getCategoria(),
+                request.getImagenUrl()
         );
     }
 }
