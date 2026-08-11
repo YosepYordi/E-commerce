@@ -358,52 +358,80 @@ body {
     gap: 16px;
 }
 
+
+
+.circle-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+    position: relative;
+}
+
+.c-mint .circle-icon {
+    background: linear-gradient(135deg, #34d399, #059669);
+    color: #ffffff;
+    box-shadow: 0 6px 18px rgba(5, 150, 105, 0.45);
+}
+
+.c-yellow .circle-icon {
+    background: linear-gradient(135deg, #fbbf24, #d97706);
+    color: #ffffff;
+    box-shadow: 0 6px 18px rgba(217, 119, 6, 0.45);
+}
+
+.c-coral .circle-icon {
+    background: linear-gradient(135deg, #fb923c, #ea580c);
+    color: #ffffff;
+    box-shadow: 0 6px 18px rgba(234, 88, 12, 0.45);
+}
+
+.c-pink .circle-icon {
+    background: linear-gradient(135deg, #f472b6, #db2777);
+    color: #ffffff;
+    box-shadow: 0 6px 18px rgba(219, 39, 119, 0.45);
+}
+
 .circle-card {
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    padding: 16px 20px;
-    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.07);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    padding: 18px 20px;
+    border-radius: 16px;
     display: flex;
     align-items: center;
     gap: 14px;
     transition: var(--transition);
+    cursor: default;
 }
 
 .circle-card:hover {
-    background: rgba(255, 255, 255, 0.15);
-    transform: translateY(-3px);
+    background: rgba(255, 255, 255, 0.13);
+    transform: translateY(-4px);
+    border-color: rgba(255, 255, 255, 0.22);
 }
-
-.circle-icon {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.15rem;
-    flex-shrink: 0;
-}
-
-.c-mint .circle-icon { background-color: var(--mint-light); color: var(--mint-primary); }
-.c-yellow .circle-icon { background-color: var(--yellow-light); color: var(--yellow-warm); }
-.c-coral .circle-icon { background-color: var(--coral-light); color: var(--coral-accent); }
-.c-pink .circle-icon { background-color: var(--rose-light); color: var(--rose-soft); }
 
 .circle-text {
     display: flex;
     flex-direction: column;
+    gap: 2px;
 }
 
 .circle-text strong {
     font-size: 0.95rem;
+    font-weight: 700;
     color: #ffffff;
+    letter-spacing: 0.1px;
 }
 
 .circle-text span {
     font-size: 0.78rem;
     color: #a8a29e;
+    font-weight: 500;
 }
 
 /* ==========================================================================

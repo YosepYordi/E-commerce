@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Juguetería Mágica - Tienda Online de Juguetes, Juegos Educativos y Peluches. Módulo de Administración y Catálogo REST.">
-    <title>Juguetería Mágica | Tienda Online & Gestión de Inventario</title>
+    <title>Juguetería Mágica | Tienda de Juguetes Online</title>
     <!-- Google Fonts: Plus Jakarta Sans & Outfit -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,15 +16,14 @@
 </head>
 <body>
 
-    <!-- Top Announcement Bar -->
+    <!-- Top Announcement Bar (Limpio y Profesional) -->
     <div class="top-announcement">
         <div class="container announcement-content">
             <div class="promo-text">
-                <i class="fa-solid fa-truck-ramp-box"></i> Envíos a todo el país gratis por compras desde S/ 150 | Entrega exprés en 24h
+                <i class="fa-solid fa-truck-fast"></i> Envíos gratis por compras mayores a S/ 150 &bull; Entrega garantizada en todo el país
             </div>
-            <div class="top-links">
-                <a href="http://localhost:8080/api/products" target="_blank"><i class="fa-solid fa-code"></i> API REST JSON</a>
-                <a href="http://localhost:8080/h2-console" target="_blank"><i class="fa-solid fa-database"></i> Base de Datos H2</a>
+            <div class="top-contact">
+                <span><i class="fa-solid fa-headset"></i> Atención al Cliente 24/7</span>
             </div>
         </div>
     </div>
@@ -46,7 +45,7 @@
             <!-- Search Bar -->
             <div class="search-box">
                 <i class="fa-solid fa-magnifying-glass search-icon"></i>
-                <input type="text" id="search-input" placeholder="Buscar por juguete, categoría o descripción..." autocomplete="off">
+                <input type="text" id="search-input" placeholder="Buscar juguetes, juegos, vehículos..." autocomplete="off">
                 <button id="search-btn" class="btn-search">
                     <i class="fa-solid fa-magnifying-glass"></i> Buscar
                 </button>
@@ -60,7 +59,7 @@
                 </button>
 
                 <button id="btn-open-cart" class="btn-action btn-cart" title="Ver Carrito de Compras">
-                    <i class="fa-solid fa-basket-shopping"></i>
+                    <i class="fa-solid fa-cart-shopping"></i>
                     <span>Carrito</span>
                     <span id="cart-count-badge" class="badge">0</span>
                 </button>
@@ -72,9 +71,9 @@
     <section class="hero-banner">
         <div class="container hero-layout">
             <div class="hero-text-col">
-                <span class="hero-chip"><i class="fa-solid fa-sparkles"></i> Colección 2026</span>
+                <span class="hero-chip"><i class="fa-solid fa-star"></i> Colección 2026</span>
                 <h1>El Lugar donde la Diversión y la Magia Cobran Vida</h1>
-                <p>Explora juguetes educativos, peluches, vehículos a control remoto y juegos para compartir en familia.</p>
+                <p>Explora nuestra selección exclusiva de juguetes educativos, peluches, vehículos a control remoto y juegos para toda la familia.</p>
                 <div class="hero-buttons">
                     <a href="#catalog-section" class="btn-hero-primary">
                         Explorar Catálogo <i class="fa-solid fa-arrow-down-long"></i>
@@ -82,34 +81,34 @@
                 </div>
             </div>
 
-            <!-- Feature Highlight Circles -->
+            <!-- Feature Highlight Cards (Íconos Profesionales de Tienda) -->
             <div class="feature-circles">
                 <div class="circle-card c-mint">
-                    <div class="circle-icon"><i class="fa-solid fa-rocket"></i></div>
+                    <div class="circle-icon"><i class="fa-solid fa-layer-group"></i></div>
                     <div class="circle-text">
                         <strong>Novedades</strong>
                         <span>Últimos ingresos</span>
                     </div>
                 </div>
                 <div class="circle-card c-yellow">
-                    <div class="circle-icon"><i class="fa-solid fa-bolt"></i></div>
+                    <div class="circle-icon"><i class="fa-solid fa-truck-fast"></i></div>
                     <div class="circle-text">
                         <strong>Envío Exprés</strong>
-                        <span>Entrega rápida</span>
+                        <span>Entrega prioritaria</span>
                     </div>
                 </div>
                 <div class="circle-card c-coral">
-                    <div class="circle-icon"><i class="fa-solid fa-gift"></i></div>
+                    <div class="circle-icon"><i class="fa-solid fa-tags"></i></div>
                     <div class="circle-text">
                         <strong>Packs Especiales</strong>
-                        <span>Mejores precios</span>
+                        <span>Precios de oferta</span>
                     </div>
                 </div>
                 <div class="circle-card c-pink">
-                    <div class="circle-icon"><i class="fa-solid fa-heart"></i></div>
+                    <div class="circle-icon"><i class="fa-solid fa-shield-halved"></i></div>
                     <div class="circle-text">
-                        <strong>Peluche Hipoalergénico</strong>
-                        <span>100% Seguros</span>
+                        <strong>Garantía Oficial</strong>
+                        <span>Productos 100% seguros</span>
                     </div>
                 </div>
             </div>
@@ -136,10 +135,10 @@
         <!-- Category Pills Bar -->
         <div class="categories-bar" id="categories-bar">
             <button class="cat-pill active" data-category="ALL"><i class="fa-solid fa-border-all"></i> Todos</button>
-            <button class="cat-pill" data-category="Peluches"><i class="fa-solid fa-teddy-bear"></i> Peluches</button>
+            <button class="cat-pill" data-category="Peluches"><i class="fa-solid fa-heart"></i> Peluches</button>
             <button class="cat-pill" data-category="Vehículos"><i class="fa-solid fa-car-side"></i> Vehículos</button>
             <button class="cat-pill" data-category="Construcción"><i class="fa-solid fa-cubes"></i> Construcción</button>
-            <button class="cat-pill" data-category="Educativos"><i class="fa-solid fa-brain"></i> Educativos</button>
+            <button class="cat-pill" data-category="Educativos"><i class="fa-solid fa-graduation-cap"></i> Educativos</button>
             <button class="cat-pill" data-category="Juegos de Mesa"><i class="fa-solid fa-dice"></i> Juegos de Mesa</button>
             <button class="cat-pill" data-category="Muñecas"><i class="fa-solid fa-crown"></i> Muñecas</button>
         </div>
@@ -164,7 +163,7 @@
     <aside id="cart-drawer" class="cart-drawer hidden">
         <div class="cart-header">
             <div class="cart-title">
-                <i class="fa-solid fa-basket-shopping"></i>
+                <i class="fa-solid fa-cart-shopping"></i>
                 <div>
                     <h3>Tu Carrito de Compras</h3>
                     <small>Juguetería Mágica</small>
