@@ -1,7 +1,7 @@
 /**
- * NEXUS Store & Administration Frontend Script
+ * Juguetería Mágica - Script Principal Frontend
  * Consumo de Servicios REST Spring Boot mediante Fetch API
- * Módulo de Administración y Gestión de Productos
+ * Módulo de Administración y Gestión de Juguetes
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
         btnOpenAdmin.addEventListener('click', () => {
             productForm.reset();
             document.getElementById('product-id').value = '';
-            document.getElementById('modal-title').textContent = 'Agregar Nuevo Producto';
+            document.getElementById('modal-title').textContent = 'Agregar Nuevo Juguete';
             adminModal.classList.remove('hidden');
         });
         btnCloseModal.addEventListener('click', () => adminModal.classList.add('hidden'));
@@ -116,8 +116,8 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             productsGrid.innerHTML = `
                 <div style="grid-column: 1/-1; text-align: center; padding: 50px;">
-                    <i class="fa-solid fa-circle-notch fa-spin" style="font-size: 2rem; color: var(--primary);"></i>
-                    <p style="margin-top: 12px; color: var(--text-secondary); font-weight: 500;">Cargando catálogo de productos...</p>
+                    <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; color: var(--mint-primary);"></i>
+                    <p style="margin-top: 12px; color: var(--text-muted); font-weight: 600;">Cargando juguetes...</p>
                 </div>`;
 
             let url = '/api/products';
@@ -135,20 +135,20 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const response = await fetch(url);
-            if (!response.ok) throw new Error('Error al consultar el catálogo de productos');
+            if (!response.ok) throw new Error('Error al cargar la lista de productos');
 
             const products = await response.json();
             renderProducts(products);
 
         } catch (error) {
             console.error('Fetch products error:', error);
-            showToast('No se pudieron recuperar los productos del servidor', 'error');
+            showToast('No se pudieron cargar los juguetes del servidor', 'error');
             productsGrid.innerHTML = '';
         }
     }
 
     function renderProducts(products) {
-        resultsCount.textContent = `Mostrando ${products.length} producto(s) en catálogo`;
+        resultsCount.textContent = `Mostrando ${products.length} juguete(s) en catálogo`;
 
         if (!products || products.length === 0) {
             productsGrid.classList.add('hidden');
@@ -167,17 +167,17 @@ document.addEventListener('DOMContentLoaded', () => {
                          onerror="this.src='https://images.unsplash.com/photo-1558060370-d644479be967?w=500'">
                     <span class="card-category-badge">${escapeHtml(product.categoria)}</span>
                     <div class="admin-card-actions">
-                        <button class="btn-card-action edit" onclick="handleEditProduct(${product.id})" title="Editar producto">
+                        <button class="btn-card-action edit" onclick="handleEditProduct(${product.id})" title="Editar juguete">
                             <i class="fa-solid fa-pen-to-square"></i>
                         </button>
-                        <button class="btn-card-action delete" onclick="handleDeleteProduct(${product.id})" title="Eliminar producto">
+                        <button class="btn-card-action delete" onclick="handleDeleteProduct(${product.id})" title="Eliminar juguete">
                             <i class="fa-solid fa-trash-can"></i>
                         </button>
                     </div>
                 </div>
                 <div class="card-body">
                     <h3 class="card-title">${escapeHtml(product.nombre)}</h3>
-                    <p class="card-description">${escapeHtml(product.descripcion || 'Sin especificaciones detalladas.')}</p>
+                    <p class="card-description">${escapeHtml(product.descripcion || 'Sin descripción detallada.')}</p>
                     <div class="card-footer">
                         <div class="card-price-box">
                             <span class="price-label">Precio</span>
@@ -187,7 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 onclick="handleAddToCart(${product.id})" 
                                 ${product.stock <= 0 ? 'disabled' : ''}>
                             <i class="fa-solid fa-cart-plus"></i>
-                            ${product.stock > 0 ? 'Agregar' : 'Agotado'}
+                            ${product.stock > 0 ? 'Añadir' : 'Agotado'}
                         </button>
                     </div>
                 </div>
@@ -221,12 +221,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (!response.ok) {
                 const errData = await response.json();
-                throw new Error(errData.message || 'Error al agregar item al carrito');
+                throw new Error(errData.message || 'Error al agregar al carrito');
             }
 
             const updatedCart = await response.json();
             updateCartUI(updatedCart);
-            showToast('Producto agregado al carrito de compras', 'success');
+            showToast('¡Juguete añadido al carrito de compras!', 'success');
 
         } catch (error) {
             showToast(error.message, 'error');
@@ -259,25 +259,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 method: 'DELETE'
             });
 
-            if (!response.ok) throw new Error('Error al eliminar producto del carrito');
+            if (!response.ok) throw new Error('Error al eliminar item del carrito');
 
             const updatedCart = await response.json();
             updateCartUI(updatedCart);
-            showToast('Producto eliminado del carrito', 'success');
+            showToast('Juguete eliminado del carrito', 'success');
         } catch (error) {
             showToast(error.message, 'error');
         }
     };
 
     async function handleClearCart() {
-        if (!confirm('¿Desea vaciar el contenido del carrito de compras?')) return;
+        if (!confirm('¿Estás seguro de vaciar el carrito?')) return;
 
         try {
             const response = await fetch('/api/cart', { method: 'DELETE' });
             if (!response.ok) throw new Error('Error al vaciar el carrito');
 
             loadCart();
-            showToast('Carrito de compras vaciado', 'success');
+            showToast('Carrito vaciado', 'success');
         } catch (error) {
             showToast(error.message, 'error');
         }
@@ -289,7 +289,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (!response.ok) {
                 const errData = await response.json();
-                throw new Error(errData.message || 'No se pudo procesar la orden');
+                throw new Error(errData.message || 'No se pudo procesar la compra');
             }
 
             const summary = await response.json();
@@ -297,8 +297,8 @@ document.addEventListener('DOMContentLoaded', () => {
             loadProducts(); // Refresh stock
             closeCartDrawer();
 
-            alert(`✅ ¡Orden procesada exitosamente!\n\nSe procesó la adquisición de ${summary.totalItems} producto(s) por un total de S/ ${parseFloat(summary.total).toFixed(2)}.\n\nGracias por su compra en NEXUS Store.`);
-            showToast('¡Orden registrada exitosamente en el sistema!', 'success');
+            alert(`🎉 ¡Compra realizada con éxito!\n\nHas adquirido ${summary.totalItems} juguete(s) por un total de S/ ${parseFloat(summary.total).toFixed(2)}.\n\n¡Gracias por tu compra en Juguetería Mágica!`);
+            showToast('¡Gracias por tu compra! Pedido registrado', 'success');
 
         } catch (error) {
             showToast(error.message, 'error');
@@ -313,9 +313,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!cart.items || cart.items.length === 0) {
             cartItemsList.innerHTML = `
                 <div style="text-align: center; padding: 40px 0; color: var(--text-muted);">
-                    <i class="fa-solid fa-bag-shopping" style="font-size: 2.5rem; margin-bottom: 12px; opacity: 0.3;"></i>
-                    <p style="font-weight: 600;">El carrito está vacío</p>
-                    <small>Seleccione productos del catálogo para agregarlos.</small>
+                    <i class="fa-solid fa-basket-shopping" style="font-size: 2.8rem; margin-bottom: 12px; opacity: 0.3;"></i>
+                    <p style="font-weight: 700;">Tu carrito está vacío</p>
+                    <small>¡Explora el catálogo y agrega tus juguetes favoritos!</small>
                 </div>`;
             btnCheckout.disabled = true;
             btnClearCart.disabled = true;
@@ -339,10 +339,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 </div>
                 <div style="text-align: right;">
-                    <div style="font-weight: 800; font-size: 0.92rem; color: var(--primary);">
+                    <div style="font-weight: 800; font-size: 0.95rem; color: var(--coral-accent);">
                         S/ ${parseFloat(item.subtotal).toFixed(2)}
                     </div>
-                    <button class="btn-remove-item" onclick="handleRemoveCartItem(${item.product.id})" title="Eliminar item">
+                    <button class="btn-remove-item" onclick="handleRemoveCartItem(${item.product.id})" title="Eliminar del carrito">
                         <i class="fa-solid fa-trash-can"></i>
                     </button>
                 </div>
@@ -383,14 +383,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (!response.ok) {
                 const errData = await response.json();
-                throw new Error(errData.message || 'Error al guardar el registro');
+                throw new Error(errData.message || 'Error al guardar el producto');
             }
 
             adminModal.classList.add('hidden');
             productForm.reset();
             document.getElementById('product-id').value = '';
             loadProducts();
-            showToast(productId ? 'Producto actualizado en el inventario' : 'Nuevo producto registrado exitosamente', 'success');
+            showToast(productId ? '¡Juguete actualizado exitosamente!' : '¡Nuevo juguete agregado al catálogo!', 'success');
 
         } catch (error) {
             showToast(error.message, 'error');
@@ -400,7 +400,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.handleEditProduct = async function(id) {
         try {
             const response = await fetch(`/api/products/${id}`);
-            if (!response.ok) throw new Error('No se pudo recuperar la información del producto');
+            if (!response.ok) throw new Error('No se pudo cargar la información del juguete');
 
             const product = await response.json();
 
@@ -412,7 +412,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('product-imagen').value = product.imagenUrl || '';
             document.getElementById('product-descripcion').value = product.descripcion || '';
 
-            document.getElementById('modal-title').textContent = 'Editar Producto de Inventario';
+            document.getElementById('modal-title').textContent = 'Editar Juguete';
             adminModal.classList.remove('hidden');
         } catch (error) {
             showToast(error.message, 'error');
@@ -420,17 +420,17 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     window.handleDeleteProduct = async function(id) {
-        if (!confirm('¿Confirma que desea eliminar este producto del sistema de inventario?')) return;
+        if (!confirm('¿Estás seguro de que deseas eliminar este juguete del catálogo?')) return;
 
         try {
             const response = await fetch(`/api/products/${id}`, {
                 method: 'DELETE'
             });
 
-            if (!response.ok) throw new Error('Error al eliminar el registro');
+            if (!response.ok) throw new Error('Error al eliminar el producto');
 
             loadProducts();
-            showToast('Registro eliminado del sistema', 'success');
+            showToast('Juguete eliminado del catálogo', 'success');
         } catch (error) {
             showToast(error.message, 'error');
         }
@@ -454,7 +454,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const toast = document.createElement('div');
         toast.className = `toast toast-${type}`;
         toast.innerHTML = `
-            <i class="fa-solid ${type === 'success' ? 'fa-circle-check' : 'fa-triangle-exclamation'}"></i>
+            <i class="fa-solid ${type === 'success' ? 'fa-circle-check' : 'fa-circle-exclamation'}"></i>
             <span>${escapeHtml(message)}</span>
         `;
         toastContainer.appendChild(toast);
