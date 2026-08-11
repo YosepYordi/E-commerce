@@ -1,5 +1,6 @@
 package com.example.demo.security;
 
+import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
@@ -14,12 +15,16 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.jayway.jsonpath.JsonPath;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.options;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.cookie;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -53,6 +58,46 @@ class SecurityIntegrationTest {
         mockMvc.perform(get("/api/cart"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.items").isArray());
+    }
+
+    @Test
+    void cartMutationRequiresCsrfToken() throws Exception {
+        mockMvc.perform(delete("/api/cart"))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.status").value(403));
+    }
+
+    @Test
+    void cartMutationWithCsrfTokenRemainsPublic() throws Exception {
+        mockMvc.perform(delete("/api/cart").with(csrf()))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void cartMutationAcceptsTokenPublishedInCookie() throws Exception {
+        MvcResult cartRead = mockMvc.perform(get("/api/cart"))
+                .andExpect(status().isOk())
+                .andReturn();
+        Cookie csrfCookie = cartRead.getResponse().getCookie("XSRF-TOKEN");
+        assertNotNull(csrfCookie);
+
+        mockMvc.perform(delete("/api/cart")
+                        .cookie(csrfCookie)
+                        .header("X-XSRF-TOKEN", csrfCookie.getValue()))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void cartPublishesCsrfCookie() throws Exception {
+        mockMvc.perform(get("/api/cart"))
+                .andExpect(status().isOk())
+                .andExpect(cookie().exists("XSRF-TOKEN"));
+    }
+
+    @Test
+    void undeclaredRoutesAreDenied() throws Exception {
+        mockMvc.perform(get("/api/not-declared"))
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
