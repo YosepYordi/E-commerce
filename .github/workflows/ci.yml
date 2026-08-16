@@ -1,0 +1,112 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    name: Java, tests and static checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      - name: Run Maven tests
+        run: |
+          chmod +x mvnw
+          ./mvnw -B test
+
+      - name: Validate JavaScript syntax
+        run: node --check src/main/resources/static/js/app.js
+
+      - name: Reject whitespace errors
+        run: git diff --check HEAD^...HEAD
+
+  mysql-smoke:
+    name: MySQL 8.4 smoke test
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_DATABASE: ecommerce_db
+          MYSQL_USER: ecommerce_app
+          MYSQL_PASSWORD: ci_password
+          MYSQL_ROOT_PASSWORD: ci_root_password
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -u root -pci_root_password"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      - name: Build application
+        run: |
+          chmod +x mvnw
+          ./mvnw -B -DskipTests package
+
+      - name: Start application against MySQL
+        env:
+          SPRING_PROFILES_ACTIVE: mysql
+          SPRING_DATASOURCE_URL: jdbc:mysql://127.0.0.1:3306/ecommerce_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+          SPRING_DATASOURCE_USERNAME: ecommerce_app
+          SPRING_DATASOURCE_PASSWORD: ci_password
+          SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
+          SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.MySQLDialect
+          SPRING_JPA_HIBERNATE_DDL_AUTO: update
+          DB_URL: jdbc:mysql://127.0.0.1:3306/ecommerce_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+          DB_USERNAME: ecommerce_app
+          DB_PASSWORD: ci_password
+          JWT_SECRET_BASE64: MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIzNDU2Nzg5MDE=
+          JWT_EXPIRATION_SECONDS: '3600'
+          ADMIN_USERNAME: admin
+          ADMIN_PASSWORD_HASH: '$2a$10$6iurHBvm3dPiZpMddjiWfenLe0HT.EDbln2WDlZ3aP.b2xFZy6SMS'
+          SERVER_PORT: '8080'
+        run: |
+          java -jar target/*.jar > app.log 2>&1 &
+          APP_PID=$!
+          trap 'kill "$APP_PID" 2>/dev/null || true' EXIT
+
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent --show-error http://127.0.0.1:8080/api/products > /tmp/products.json; then
+              test -s /tmp/products.json
+              exit 0
+            fi
+
+            if ! kill -0 "$APP_PID" 2>/dev/null; then
+              cat app.log
+              exit 1
+            fi
+
+            sleep 2
+          done
+
+          cat app.log
+          exit 1
