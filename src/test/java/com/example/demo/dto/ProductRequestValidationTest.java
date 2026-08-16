@@ -63,4 +63,21 @@ class ProductRequestValidationTest {
 
         assertEquals(0, validator.validate(request).size());
     }
+
+    @Test
+    void rejectsCategoryAndImageUrlThatExceedEntityColumnLengths() {
+        ProductRequest request = new ProductRequest();
+        request.setNombre("Rompecabezas");
+        request.setPrecio(BigDecimal.ZERO);
+        request.setStock(0);
+        request.setCategoria("c".repeat(256));
+        request.setImagenUrl("https://example.com/" + "i".repeat(500));
+
+        Set<String> invalidFields = validator.validate(request).stream()
+                .map(violation -> violation.getPropertyPath().toString())
+                .collect(Collectors.toSet());
+
+        assertTrue(invalidFields.contains("categoria"));
+        assertTrue(invalidFields.contains("imagenUrl"));
+    }
 }

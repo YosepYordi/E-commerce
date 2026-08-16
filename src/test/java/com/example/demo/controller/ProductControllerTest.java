@@ -129,6 +129,26 @@ class ProductControllerTest {
                 .andExpect(jsonPath("$.message").isString());
     }
 
+    @Test
+    void malformedJsonReturnsBadRequestWithCommonErrorShape() throws Exception {
+        mockMvc.perform(post("/api/products")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"nombre\":\"Rompecabezas\""))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.path").value("/api/products"));
+    }
+
+    @Test
+    void emptyJsonBodyReturnsBadRequestWithCommonErrorShape() throws Exception {
+        mockMvc.perform(post("/api/products")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(""))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.path").value("/api/products"));
+    }
+
     private ProductDTO product(Long id) {
         return new ProductDTO(id, "Rompecabezas", "Juego de piezas", new BigDecimal("10.00"), 4, "Juegos", "https://example.com/image.png");
     }
