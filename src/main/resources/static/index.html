@@ -53,7 +53,17 @@
 
             <!-- Header Action Controls -->
             <div class="header-actions">
-                <button id="btn-open-admin" class="btn-action btn-admin" title="Agregar Juguete al Catálogo">
+                <button id="btn-open-login" class="btn-action btn-login" title="Iniciar Sesión Administrador">
+                    <i class="fa-solid fa-user-lock"></i>
+                    <span>Login Admin</span>
+                </button>
+
+                <button id="btn-logout-admin" class="btn-action btn-logout hidden" title="Cerrar Sesión Administrador">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Salir Admin</span>
+                </button>
+
+                <button id="btn-open-admin" class="btn-action btn-admin hidden" title="Agregar Juguete al Catálogo">
                     <i class="fa-solid fa-plus"></i>
                     <span>Nuevo Juguete</span>
                 </button>
@@ -117,14 +127,14 @@
 
     <!-- Main Catalog Section -->
     <main id="catalog-section" class="container catalog-container">
-        
+
         <!-- Filter Controls Bar -->
         <div class="catalog-toolbar">
             <div class="toolbar-title-box">
                 <h2>Catálogo de Juguetes</h2>
                 <p id="results-count">Cargando catálogo de juguetes...</p>
             </div>
-            
+
             <div class="toolbar-actions">
                 <button id="reset-filters-btn" class="btn-reset">
                     <i class="fa-solid fa-arrow-rotate-left"></i> Restablecer Filtros
@@ -197,6 +207,38 @@
         </div>
     </aside>
 
+    <!-- Admin Login Modal -->
+    <div id="login-modal" class="modal-backdrop hidden">
+        <div class="modal-card modal-card-sm">
+            <div class="modal-header">
+                <div class="modal-header-title">
+                    <i class="fa-solid fa-user-shield"></i>
+                    <h3>Iniciar Sesión Administrador</h3>
+                </div>
+                <button id="btn-close-login" class="btn-close"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <form id="login-form" class="product-form">
+                <div class="form-group">
+                    <label for="login-username">Usuario <span class="required">*</span></label>
+                    <input type="text" id="login-username" required placeholder="admin" autocomplete="username">
+                </div>
+
+                <div class="form-group">
+                    <label for="login-password">Contraseña <span class="required">*</span></label>
+                    <input type="password" id="login-password" required placeholder="••••••••" autocomplete="current-password">
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" id="btn-cancel-login" class="btn-modal-cancel">Cancelar</button>
+                    <button type="submit" class="btn-modal-submit">
+                        <i class="fa-solid fa-right-to-bracket"></i> Ingresar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Admin / Product Creation & Editing Modal -->
     <div id="admin-modal" class="modal-backdrop hidden">
         <div class="modal-card">
@@ -207,7 +249,7 @@
                 </div>
                 <button id="btn-close-modal" class="btn-close"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            
+
             <form id="product-form" class="product-form">
                 <input type="hidden" id="product-id">
 
