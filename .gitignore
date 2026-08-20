@@ -36,3 +36,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Superpowers/Codex working documents
+docs/superpowers/plans/
+docs/superpowers/specs/
