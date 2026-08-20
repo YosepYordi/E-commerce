@@ -185,6 +185,19 @@ document.addEventListener('DOMContentLoaded', () => {
     // API REST - Shopping Cart Operations (Fetch API)
     // ==========================================================================
 
+    function getCookie(name) {
+        const cookie = document.cookie
+            .split('; ')
+            .find(row => row.startsWith(`${name}=`));
+
+        return cookie ? decodeURIComponent(cookie.substring(name.length + 1)) : null;
+    }
+
+    function csrfHeaders() {
+        const token = getCookie('XSRF-TOKEN');
+        return token ? { 'X-XSRF-TOKEN': token } : {};
+    }
+
     async function loadCart() {
         try {
             const response = await fetch('/api/cart');
@@ -201,7 +214,10 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await fetch('/api/cart/add', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...csrfHeaders()
+                },
                 body: JSON.stringify({ productId, cantidad: 1 })
             });
 
@@ -227,7 +243,10 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await fetch('/api/cart/update', {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...csrfHeaders()
+                },
                 body: JSON.stringify({ productId, cantidad })
             });
 
@@ -246,7 +265,8 @@ document.addEventListener('DOMContentLoaded', () => {
     window.handleRemoveCartItem = async function(productId) {
         try {
             const response = await fetch(`/api/cart/items/${productId}`, {
-                method: 'DELETE'
+                method: 'DELETE',
+                headers: csrfHeaders()
             });
 
             if (!response.ok) throw new Error('Error al eliminar item del carrito');
@@ -263,7 +283,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!confirm('¿Estás seguro de vaciar el carrito?')) return;
 
         try {
-            const response = await fetch('/api/cart', { method: 'DELETE' });
+            const response = await fetch('/api/cart', {
+                method: 'DELETE',
+                headers: csrfHeaders()
+            });
             if (!response.ok) throw new Error('Error al vaciar el carrito');
 
             loadCart();
@@ -275,7 +298,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function handleCheckout() {
         try {
-            const response = await fetch('/api/cart/checkout', { method: 'POST' });
+            const response = await fetch('/api/cart/checkout', {
+                method: 'POST',
+                headers: csrfHeaders()
+            });
 
             if (!response.ok) {
                 const errData = await response.json();
