@@ -80,4 +80,33 @@ class ProductRequestValidationTest {
         assertTrue(invalidFields.contains("categoria"));
         assertTrue(invalidFields.contains("imagenUrl"));
     }
+
+    @Test
+    void rejectsPriceExceedingPrecisionOrScale() {
+        // Test case 1: Price with more than 8 integer digits (e.g. 123456789.99)
+        ProductRequest requestIntegerExceeded = new ProductRequest();
+        requestIntegerExceeded.setNombre("Rompecabezas");
+        requestIntegerExceeded.setPrecio(new BigDecimal("123456789.99"));
+        requestIntegerExceeded.setStock(10);
+        requestIntegerExceeded.setCategoria("Juegos");
+        requestIntegerExceeded.setImagenUrl("https://example.com/image.png");
+
+        Set<String> violationsInteger = validator.validate(requestIntegerExceeded).stream()
+                .map(violation -> violation.getPropertyPath().toString())
+                .collect(Collectors.toSet());
+        assertTrue(violationsInteger.contains("precio"));
+
+        // Test case 2: Price with more than 2 decimal places (e.g. 10.001)
+        ProductRequest requestFractionExceeded = new ProductRequest();
+        requestFractionExceeded.setNombre("Rompecabezas");
+        requestFractionExceeded.setPrecio(new BigDecimal("10.001"));
+        requestFractionExceeded.setStock(10);
+        requestFractionExceeded.setCategoria("Juegos");
+        requestFractionExceeded.setImagenUrl("https://example.com/image.png");
+
+        Set<String> violationsFraction = validator.validate(requestFractionExceeded).stream()
+                .map(violation -> violation.getPropertyPath().toString())
+                .collect(Collectors.toSet());
+        assertTrue(violationsFraction.contains("precio"));
+    }
 }

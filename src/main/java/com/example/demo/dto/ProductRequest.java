@@ -1,6 +1,7 @@
 package com.example.demo.dto;
 
 import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -20,6 +21,7 @@ public class ProductRequest {
 
     @NotNull(message = "El precio es obligatorio")
     @DecimalMin(value = "0.0", inclusive = true, message = "El precio debe ser mayor o igual a 0")
+    @Digits(integer = 8, fraction = 2, message = "El precio debe tener como máximo 8 enteros y 2 decimales")
     private BigDecimal precio;
 
     @NotNull(message = "El stock es obligatorio")

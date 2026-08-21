@@ -165,4 +165,41 @@ class ProductControllerTest {
                 }
                 """;
     }
+
+    @Test
+    void createProductRejectsPriceExceedingDigitsLimits() throws Exception {
+        // Exceeding integer digits limit (integer = 8)
+        mockMvc.perform(post("/api/products")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "nombre": "Rompecabezas",
+                                  "descripcion": "Juego de piezas",
+                                  "precio": 123456789.99,
+                                  "stock": 4,
+                                  "categoria": "Juegos",
+                                  "imagenUrl": "https://example.com/image.png"
+                                }
+                                """))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.path").value("/api/products"));
+
+        // Exceeding fractional digits limit (fraction = 2)
+        mockMvc.perform(post("/api/products")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "nombre": "Rompecabezas",
+                                  "descripcion": "Juego de piezas",
+                                  "precio": 10.001,
+                                  "stock": 4,
+                                  "categoria": "Juegos",
+                                  "imagenUrl": "https://example.com/image.png"
+                                }
+                                """))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.path").value("/api/products"));
+    }
 }
