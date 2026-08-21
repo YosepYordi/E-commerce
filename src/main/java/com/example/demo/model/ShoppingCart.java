@@ -1,47 +1,22 @@
 package com.example.demo.model;
 
-import lombok.Data;
-
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-@Data
+/**
+ * Read model used to calculate a response from the ids and quantities kept in
+ * the session. It is intentionally not a session-persisted object.
+ */
 public class ShoppingCart {
 
-    private List<CartItem> items = new ArrayList<>();
+    private final List<CartItem> items;
 
-    public void addItem(Product product, int cantidad) {
-        Optional<CartItem> existingItem = items.stream()
-                .filter(item -> item.getProduct().getId().equals(product.getId()))
-                .findFirst();
-
-        if (existingItem.isPresent()) {
-            CartItem item = existingItem.get();
-            item.setCantidad(item.getCantidad() + cantidad);
-        } else {
-            items.add(new CartItem(product, cantidad));
-        }
+    public ShoppingCart(List<CartItem> items) {
+        this.items = List.copyOf(items);
     }
 
-    public void updateQuantity(Long productId, int cantidad) {
-        if (cantidad <= 0) {
-            removeItem(productId);
-            return;
-        }
-        items.stream()
-                .filter(item -> item.getProduct().getId().equals(productId))
-                .findFirst()
-                .ifPresent(item -> item.setCantidad(cantidad));
-    }
-
-    public void removeItem(Long productId) {
-        items.removeIf(item -> item.getProduct().getId().equals(productId));
-    }
-
-    public void clear() {
-        items.clear();
+    public List<CartItem> getItems() {
+        return items;
     }
 
     public BigDecimal getTotal() {

@@ -3,29 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Juguetería Mágica - Los mejores juguetes, juegos de mesa y peluches al mejor precio.">
+    <meta name="description" content="Juguetería Mágica - Tienda Online de Juguetes, Juegos Educativos y Peluches. Módulo de Administración y Catálogo REST.">
     <title>Juguetería Mágica | Tienda de Juguetes Online</title>
-    <!-- Google Fonts -->
+    <!-- Google Fonts: Plus Jakarta Sans & Outfit -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- FontAwesome Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome 6 Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
 
-    <!-- Top Notice Bar -->
-    <div class="top-bar">
-        <span>🚀 Envíos gratis por compras mayores a S/ 150 | 🎁 ¡Regalo sorpresa en cada pedido!</span>
+    <!-- Top Announcement Bar (Limpio y Profesional) -->
+    <div class="top-announcement">
+        <div class="container announcement-content">
+            <div class="promo-text">
+                <i class="fa-solid fa-truck-fast"></i> Envíos gratis por compras mayores a S/ 150 &bull; Entrega garantizada en todo el país
+            </div>
+            <div class="top-contact">
+                <span><i class="fa-solid fa-headset"></i> Atención al Cliente 24/7</span>
+            </div>
+        </div>
     </div>
 
     <!-- Main Navigation Header -->
     <header class="navbar">
         <div class="container navbar-content">
+            <!-- Brand Logo -->
             <a href="#" class="brand-logo">
-                <span class="logo-icon">🧸</span>
+                <div class="logo-icon-box">
+                    <i class="fa-solid fa-shapes"></i>
+                </div>
                 <div class="logo-text">
                     <span class="brand-name">JUGUETERÍA</span>
                     <span class="brand-sub">Mágica</span>
@@ -35,92 +45,141 @@
             <!-- Search Bar -->
             <div class="search-box">
                 <i class="fa-solid fa-magnifying-glass search-icon"></i>
-                <input type="text" id="search-input" placeholder="Buscar juguetes, juegos, carros..." autocomplete="off">
-                <button id="search-btn" class="btn-search">Buscar</button>
+                <input type="text" id="search-input" placeholder="Buscar juguetes, juegos, vehículos..." autocomplete="off">
+                <button id="search-btn" class="btn-search">
+                    <i class="fa-solid fa-magnifying-glass"></i> Buscar
+                </button>
             </div>
 
-            <!-- Header Actions -->
+            <!-- Header Action Controls -->
             <div class="header-actions">
-                <button id="btn-open-admin" class="btn-icon-label" title="Agregar nuevo juguete">
-                    <i class="fa-solid fa-plus-circle"></i>
+                <button id="btn-open-login" class="btn-action btn-login" title="Iniciar Sesión Administrador">
+                    <i class="fa-solid fa-user-lock"></i>
+                    <span>Login Admin</span>
+                </button>
+
+                <button id="btn-logout-admin" class="btn-action btn-logout hidden" title="Cerrar Sesión Administrador">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Salir Admin</span>
+                </button>
+
+                <button id="btn-open-admin" class="btn-action btn-admin hidden" title="Agregar Juguete al Catálogo">
+                    <i class="fa-solid fa-plus"></i>
                     <span>Nuevo Juguete</span>
                 </button>
 
-                <button id="btn-open-cart" class="cart-btn" title="Ver Carrito de Compras">
-                    <i class="fa-solid fa-basket-shopping"></i>
-                    <span class="cart-label">Carrito</span>
+                <button id="btn-open-cart" class="btn-action btn-cart" title="Ver Carrito de Compras">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span>Carrito</span>
                     <span id="cart-count-badge" class="badge">0</span>
                 </button>
             </div>
         </div>
     </header>
 
-    <!-- Hero Banner -->
-    <section class="hero">
-        <div class="container hero-content">
-            <div class="hero-text">
-                <span class="hero-badge">✨ Colección 2026 ✨</span>
-                <h1>¡Donde la Diversión y la Magia Cobran Vida!</h1>
-                <p>Descubre nuestra selección de peluches, vehículos a control remoto, robots educativos y juegos para toda la familia.</p>
+    <!-- Creative Hero Section -->
+    <section class="hero-banner">
+        <div class="container hero-layout">
+            <div class="hero-text-col">
+                <span class="hero-chip"><i class="fa-solid fa-star"></i> Colección 2026</span>
+                <h1>El Lugar donde la Diversión y la Magia Cobran Vida</h1>
+                <p>Explora nuestra selección exclusiva de juguetes educativos, peluches, vehículos a control remoto y juegos para toda la familia.</p>
                 <div class="hero-buttons">
-                    <a href="#catalog-section" class="btn btn-primary">Explorar Catálogo <i class="fa-solid fa-arrow-down"></i></a>
+                    <a href="#catalog-section" class="btn-hero-primary">
+                        Explorar Catálogo <i class="fa-solid fa-arrow-down-long"></i>
+                    </a>
                 </div>
             </div>
-            <div class="hero-illustration">
-                <div class="floating-card c1">🚀 <span>Novedades Espaciales</span></div>
-                <div class="floating-card c2">🧸 <span>Peluches Hipoalergénicos</span></div>
-                <div class="floating-card c3">⚡ <span>Envío Exprés</span></div>
+
+            <!-- Feature Highlight Cards (Íconos Profesionales de Tienda) -->
+            <div class="feature-circles">
+                <div class="circle-card c-mint">
+                    <div class="circle-icon"><i class="fa-solid fa-layer-group"></i></div>
+                    <div class="circle-text">
+                        <strong>Novedades</strong>
+                        <span>Últimos ingresos</span>
+                    </div>
+                </div>
+                <div class="circle-card c-yellow">
+                    <div class="circle-icon"><i class="fa-solid fa-truck-fast"></i></div>
+                    <div class="circle-text">
+                        <strong>Envío Exprés</strong>
+                        <span>Entrega prioritaria</span>
+                    </div>
+                </div>
+                <div class="circle-card c-coral">
+                    <div class="circle-icon"><i class="fa-solid fa-tags"></i></div>
+                    <div class="circle-text">
+                        <strong>Packs Especiales</strong>
+                        <span>Precios de oferta</span>
+                    </div>
+                </div>
+                <div class="circle-card c-pink">
+                    <div class="circle-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                    <div class="circle-text">
+                        <strong>Garantía Oficial</strong>
+                        <span>Productos 100% seguros</span>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
     <!-- Main Catalog Section -->
     <main id="catalog-section" class="container catalog-container">
-        
-        <!-- Filter Controls -->
-        <div class="catalog-header">
-            <div class="section-title">
+
+        <!-- Filter Controls Bar -->
+        <div class="catalog-toolbar">
+            <div class="toolbar-title-box">
                 <h2>Catálogo de Juguetes</h2>
-                <p id="results-count">Cargando productos...</p>
+                <p id="results-count">Cargando catálogo de juguetes...</p>
             </div>
 
-            <!-- Categories Filter Pills -->
-            <div class="categories-bar" id="categories-bar">
-                <button class="cat-pill active" data-category="ALL">Todos</button>
-                <button class="cat-pill" data-category="Peluches">🧸 Peluches</button>
-                <button class="cat-pill" data-category="Vehículos">🚗 Vehículos</button>
-                <button class="cat-pill" data-category="Construcción">🧱 Construcción</button>
-                <button class="cat-pill" data-category="Educativos">🤖 Educativos</button>
-                <button class="cat-pill" data-category="Juegos de Mesa">🎲 Juegos de Mesa</button>
-                <button class="cat-pill" data-category="Muñecas">👑 Muñecas</button>
+            <div class="toolbar-actions">
+                <button id="reset-filters-btn" class="btn-reset">
+                    <i class="fa-solid fa-arrow-rotate-left"></i> Restablecer Filtros
+                </button>
             </div>
+        </div>
+
+        <!-- Category Pills Bar -->
+        <div class="categories-bar" id="categories-bar">
+            <button class="cat-pill active" data-category="ALL"><i class="fa-solid fa-border-all"></i> Todos</button>
+            <button class="cat-pill" data-category="Peluches"><i class="fa-solid fa-heart"></i> Peluches</button>
+            <button class="cat-pill" data-category="Vehículos"><i class="fa-solid fa-car-side"></i> Vehículos</button>
+            <button class="cat-pill" data-category="Construcción"><i class="fa-solid fa-cubes"></i> Construcción</button>
+            <button class="cat-pill" data-category="Educativos"><i class="fa-solid fa-graduation-cap"></i> Educativos</button>
+            <button class="cat-pill" data-category="Juegos de Mesa"><i class="fa-solid fa-dice"></i> Juegos de Mesa</button>
+            <button class="cat-pill" data-category="Muñecas"><i class="fa-solid fa-crown"></i> Muñecas</button>
         </div>
 
         <!-- Products Grid Container -->
         <div id="products-grid" class="products-grid">
-            <!-- Dynamic JS product cards inserted here -->
+            <!-- Dynamic product cards populated via JS -->
         </div>
 
-        <!-- Empty / No Results State -->
+        <!-- Empty State -->
         <div id="no-results" class="no-results hidden">
-            <div class="no-results-icon">🧩</div>
+            <div class="no-results-icon"><i class="fa-solid fa-puzzle-piece"></i></div>
             <h3>No encontramos juguetes con esa búsqueda</h3>
-            <p>Intenta buscando con otra palabra o selecciona una categoría diferente.</p>
-            <button id="reset-filters-btn" class="btn btn-secondary">Ver Todos los Juguetes</button>
+            <p>Intenta con otra palabra clave o selecciona una categoría diferente.</p>
         </div>
     </main>
 
-    <!-- Shopping Cart Drawer Overlay -->
+    <!-- Shopping Cart Overlay -->
     <div id="cart-overlay" class="overlay hidden"></div>
 
-    <!-- Shopping Cart Sidebar -->
+    <!-- Shopping Cart Drawer Sidebar -->
     <aside id="cart-drawer" class="cart-drawer hidden">
         <div class="cart-header">
             <div class="cart-title">
                 <i class="fa-solid fa-cart-shopping"></i>
-                <h3>Tu Carrito de Compras</h3>
+                <div>
+                    <h3>Tu Carrito de Compras</h3>
+                    <small>Juguetería Mágica</small>
+                </div>
             </div>
-            <button id="btn-close-cart" class="btn-close">&times;</button>
+            <button id="btn-close-cart" class="btn-close"><i class="fa-solid fa-xmark"></i></button>
         </div>
 
         <div id="cart-items-list" class="cart-items-list">
@@ -129,7 +188,7 @@
 
         <div class="cart-footer">
             <div class="summary-row">
-                <span>Total de items:</span>
+                <span>Total de juguetes:</span>
                 <strong id="cart-total-items">0</strong>
             </div>
             <div class="summary-row total-row">
@@ -138,34 +197,70 @@
             </div>
 
             <div class="cart-actions">
-                <button id="btn-clear-cart" class="btn btn-danger-outline">
+                <button id="btn-clear-cart" class="btn-clear">
                     <i class="fa-solid fa-trash-can"></i> Vaciar Carrito
                 </button>
-                <button id="btn-checkout" class="btn btn-success">
+                <button id="btn-checkout" class="btn-checkout">
                     <i class="fa-solid fa-credit-card"></i> Finalizar Compra
                 </button>
             </div>
         </div>
     </aside>
 
-    <!-- Admin / Create Product Modal Overlay -->
+    <!-- Admin Login Modal -->
+    <div id="login-modal" class="modal-backdrop hidden">
+        <div class="modal-card modal-card-sm">
+            <div class="modal-header">
+                <div class="modal-header-title">
+                    <i class="fa-solid fa-user-shield"></i>
+                    <h3>Iniciar Sesión Administrador</h3>
+                </div>
+                <button id="btn-close-login" class="btn-close"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <form id="login-form" class="product-form">
+                <div class="form-group">
+                    <label for="login-username">Usuario <span class="required">*</span></label>
+                    <input type="text" id="login-username" required placeholder="admin" autocomplete="username">
+                </div>
+
+                <div class="form-group">
+                    <label for="login-password">Contraseña <span class="required">*</span></label>
+                    <input type="password" id="login-password" required placeholder="••••••••" autocomplete="current-password">
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" id="btn-cancel-login" class="btn-modal-cancel">Cancelar</button>
+                    <button type="submit" class="btn-modal-submit">
+                        <i class="fa-solid fa-right-to-bracket"></i> Ingresar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin / Product Creation & Editing Modal -->
     <div id="admin-modal" class="modal-backdrop hidden">
         <div class="modal-card">
             <div class="modal-header">
-                <h3 id="modal-title">Agregar Nuevo Juguete</h3>
-                <button id="btn-close-modal" class="btn-close">&times;</button>
+                <div class="modal-header-title">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                    <h3 id="modal-title">Agregar Nuevo Juguete</h3>
+                </div>
+                <button id="btn-close-modal" class="btn-close"><i class="fa-solid fa-xmark"></i></button>
             </div>
+
             <form id="product-form" class="product-form">
                 <input type="hidden" id="product-id">
 
                 <div class="form-group">
-                    <label for="product-nombre">Nombre del Juguete *</label>
+                    <label for="product-nombre">Nombre del Juguete <span class="required">*</span></label>
                     <input type="text" id="product-nombre" required placeholder="Ej. Pista de Carreras Loop Turbo">
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="product-categoria">Categoría *</label>
+                        <label for="product-categoria">Categoría <span class="required">*</span></label>
                         <select id="product-categoria" required>
                             <option value="Peluches">Peluches</option>
                             <option value="Vehículos">Vehículos</option>
@@ -176,18 +271,18 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="product-precio">Precio (S/) *</label>
+                        <label for="product-precio">Precio (S/) <span class="required">*</span></label>
                         <input type="number" id="product-precio" step="0.01" min="0" required placeholder="89.90">
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="product-stock">Stock Disponible *</label>
+                        <label for="product-stock">Stock Disponible <span class="required">*</span></label>
                         <input type="number" id="product-stock" min="0" required placeholder="15">
                     </div>
                     <div class="form-group">
-                        <label for="product-imagen">URL de Imagen</label>
+                        <label for="product-imagen">URL de la Imagen</label>
                         <input type="url" id="product-imagen" placeholder="https://images.unsplash.com/...">
                     </div>
                 </div>
@@ -198,8 +293,10 @@
                 </div>
 
                 <div class="modal-actions">
-                    <button type="button" id="btn-cancel-modal" class="btn btn-secondary">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Guardar Juguete</button>
+                    <button type="button" id="btn-cancel-modal" class="btn-modal-cancel">Cancelar</button>
+                    <button type="submit" class="btn-modal-submit">
+                        <i class="fa-solid fa-floppy-disk"></i> Guardar Juguete
+                    </button>
                 </div>
             </form>
         </div>
@@ -212,17 +309,11 @@
     <footer class="footer">
         <div class="container footer-content">
             <div class="footer-brand">
-                <span class="logo-icon">🧸</span>
+                <div class="logo-icon-box-sm">
+                    <i class="fa-solid fa-shapes"></i>
+                </div>
                 <h3>Juguetería Mágica</h3>
                 <p>La mejor tienda online de juguetes en Perú. Calidad, diversión y sonrisas garantizadas.</p>
-            </div>
-            <div class="footer-links">
-                <h4>Enlaces Rápidos</h4>
-                <ul>
-                    <li><a href="#catalog-section">Catálogo de Juguetes</a></li>
-                    <li><a href="http://localhost:8080/h2-console" target="_blank">Consola H2 Database</a></li>
-                    <li><a href="http://localhost:8080/api/products" target="_blank">REST API Productos JSON</a></li>
-                </ul>
             </div>
             <div class="footer-copy">
                 <p>&copy; 2026 Juguetería Mágica. Todos los derechos reservados. Desarrollado con Spring Boot & Fetch API.</p>

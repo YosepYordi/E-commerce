@@ -65,6 +65,47 @@ class ProductRequestValidationTest {
     }
 
     @Test
+    void rejectsPriceWithMoreThanEightIntegerDigits() {
+        ProductRequest request = new ProductRequest();
+        request.setNombre("Rompecabezas");
+        request.setPrecio(new BigDecimal("100000000.00"));
+        request.setStock(0);
+        request.setCategoria("Juegos");
+
+        Set<String> invalidFields = validator.validate(request).stream()
+                .map(violation -> violation.getPropertyPath().toString())
+                .collect(Collectors.toSet());
+
+        assertTrue(invalidFields.contains("precio"));
+    }
+
+    @Test
+    void rejectsPriceWithMoreThanTwoFractionDigits() {
+        ProductRequest request = new ProductRequest();
+        request.setNombre("Rompecabezas");
+        request.setPrecio(new BigDecimal("10.001"));
+        request.setStock(0);
+        request.setCategoria("Juegos");
+
+        Set<String> invalidFields = validator.validate(request).stream()
+                .map(violation -> violation.getPropertyPath().toString())
+                .collect(Collectors.toSet());
+
+        assertTrue(invalidFields.contains("precio"));
+    }
+
+    @Test
+    void acceptsPriceWithEightIntegerDigitsAndTwoFractionDigits() {
+        ProductRequest request = new ProductRequest();
+        request.setNombre("Rompecabezas");
+        request.setPrecio(new BigDecimal("99999999.99"));
+        request.setStock(0);
+        request.setCategoria("Juegos");
+
+        assertEquals(0, validator.validate(request).size());
+    }
+
+    @Test
     void rejectsCategoryAndImageUrlThatExceedEntityColumnLengths() {
         ProductRequest request = new ProductRequest();
         request.setNombre("Rompecabezas");

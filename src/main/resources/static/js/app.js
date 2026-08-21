@@ -1,6 +1,7 @@
 /**
- * Juguetería Mágica - App Frontend Script
+ * Juguetería Mágica - Script Principal Frontend
  * Consumo de Servicios REST Spring Boot mediante Fetch API
+ * Módulo de Administración y Gestión de Juguetes
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -8,6 +9,40 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- State Management ---
     let currentCategory = 'ALL';
     let searchQuery = '';
+
+    // --- Auth Token (JWT) ---
+    // El token se guarda en sessionStorage tras el login del administrador
+    // --- Auth & Security ---
+    function getAuthToken() {
+        return sessionStorage.getItem('adminToken') || null;
+    }
+
+    function getAdminHeaders() {
+        const token = getAuthToken();
+        const headers = { 'Content-Type': 'application/json' };
+        if (token) headers['Authorization'] = `Bearer ${token}`;
+        return headers;
+    }
+
+    function getCsrfToken() {
+        const match = document.cookie.match(new RegExp('(^| )XSRF-TOKEN=([^;]+)'));
+        return match ? decodeURIComponent(match[2]) : null;
+    }
+
+    function updateAdminUI() {
+        const isAdmin = !!getAuthToken();
+        const btnAdmin = document.getElementById('btn-open-admin');
+        const btnLogin = document.getElementById('btn-open-login');
+        const btnLogout = document.getElementById('btn-logout-admin');
+
+        if (btnAdmin) btnAdmin.classList.toggle('hidden', !isAdmin);
+        if (btnLogin) btnLogin.classList.toggle('hidden', isAdmin);
+        if (btnLogout) btnLogout.classList.toggle('hidden', !isAdmin);
+
+        document.querySelectorAll('.admin-card-actions').forEach(el => {
+            el.style.display = isAdmin ? 'flex' : 'none';
+        });
+    }
 
     // --- DOM Elements ---
     const productsGrid = document.getElementById('products-grid');
@@ -30,6 +65,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnClearCart = document.getElementById('btn-clear-cart');
     const btnCheckout = document.getElementById('btn-checkout');
 
+    // Login Modal Elements
+    const btnOpenLogin = document.getElementById('btn-open-login');
+    const btnLogoutAdmin = document.getElementById('btn-logout-admin');
+    const btnCloseLogin = document.getElementById('btn-close-login');
+    const btnCancelLogin = document.getElementById('btn-cancel-login');
+    const loginModal = document.getElementById('login-modal');
+    const loginForm = document.getElementById('login-form');
+
     // Admin Modal Elements
     const btnOpenAdmin = document.getElementById('btn-open-admin');
     const btnCloseModal = document.getElementById('btn-close-modal');
@@ -44,6 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
     init();
 
     function init() {
+        updateAdminUI();
         loadProducts();
         loadCart();
         setupEventListeners();
@@ -95,8 +139,25 @@ document.addEventListener('DOMContentLoaded', () => {
         btnClearCart.addEventListener('click', handleClearCart);
         btnCheckout.addEventListener('click', handleCheckout);
 
+        // Login Modal Controls
+        if (btnOpenLogin) {
+            btnOpenLogin.addEventListener('click', () => {
+                loginForm.reset();
+                loginModal.classList.remove('hidden');
+            });
+        }
+        if (btnCloseLogin) btnCloseLogin.addEventListener('click', () => loginModal.classList.add('hidden'));
+        if (btnCancelLogin) btnCancelLogin.addEventListener('click', () => loginModal.classList.add('hidden'));
+        if (btnLogoutAdmin) btnLogoutAdmin.addEventListener('click', handleLogoutAdmin);
+        if (loginForm) loginForm.addEventListener('submit', handleLoginSubmit);
+
         // Admin Modal Controls
-        btnOpenAdmin.addEventListener('click', () => adminModal.classList.remove('hidden'));
+        btnOpenAdmin.addEventListener('click', () => {
+            productForm.reset();
+            document.getElementById('product-id').value = '';
+            document.getElementById('modal-title').textContent = 'Agregar Nuevo Juguete';
+            adminModal.classList.remove('hidden');
+        });
         btnCloseModal.addEventListener('click', () => adminModal.classList.add('hidden'));
         btnCancelModal.addEventListener('click', () => adminModal.classList.add('hidden'));
         productForm.addEventListener('submit', handleSaveProduct);
@@ -109,9 +170,9 @@ document.addEventListener('DOMContentLoaded', () => {
     async function loadProducts() {
         try {
             productsGrid.innerHTML = `
-                <div style="grid-column: 1/-1; text-align: center; padding: 40px;">
-                    <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; color: var(--secondary-color);"></i>
-                    <p style="margin-top: 10px; color: var(--text-secondary);">Cargando juguetes...</p>
+                <div style="grid-column: 1/-1; text-align: center; padding: 50px;">
+                    <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; color: var(--mint-primary);"></i>
+                    <p style="margin-top: 12px; color: var(--text-muted); font-weight: 600;">Cargando juguetes...</p>
                 </div>`;
 
             let url = '/api/products';
@@ -133,7 +194,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const products = await response.json();
             renderProducts(products);
-
         } catch (error) {
             console.error('Fetch products error:', error);
             showToast('No se pudieron cargar los juguetes del servidor', 'error');
@@ -150,16 +210,26 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        const isAdmin = !!getAuthToken();
+
         noResults.classList.add('hidden');
         productsGrid.classList.remove('hidden');
 
         productsGrid.innerHTML = products.map(product => `
             <div class="product-card">
                 <div class="card-img-wrapper">
-                    <img src="${product.imagenUrl || 'https://images.unsplash.com/photo-1558060370-d644479be967?w=500'}" 
+                    <img src="${product.imagenUrl || 'https://images.unsplash.com/photo-1558060370-d644479be967?w=500'}"
                          alt="${escapeHtml(product.nombre)}" class="card-img"
                          onerror="this.src='https://images.unsplash.com/photo-1558060370-d644479be967?w=500'">
                     <span class="card-category-badge">${escapeHtml(product.categoria)}</span>
+                    <div class="admin-card-actions" style="display: ${isAdmin ? 'flex' : 'none'};">
+                        <button class="btn-card-action edit" onclick="handleEditProduct(${product.id})" title="Editar juguete">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </button>
+                        <button class="btn-card-action delete" onclick="handleDeleteProduct(${product.id})" title="Eliminar juguete">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </div>
                 </div>
                 <div class="card-body">
                     <h3 class="card-title">${escapeHtml(product.nombre)}</h3>
@@ -169,8 +239,8 @@ document.addEventListener('DOMContentLoaded', () => {
                             <span class="price-label">Precio</span>
                             <span class="card-price">S/ ${parseFloat(product.precio).toFixed(2)}</span>
                         </div>
-                        <button class="btn-add-cart" 
-                                onclick="handleAddToCart(${product.id})" 
+                        <button class="btn-add-cart"
+                                onclick="handleAddToCart(${product.id})"
                                 ${product.stock <= 0 ? 'disabled' : ''}>
                             <i class="fa-solid fa-cart-plus"></i>
                             ${product.stock > 0 ? 'Añadir' : 'Agotado'}
@@ -187,7 +257,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function loadCart() {
         try {
-            const response = await fetch('/api/cart');
+            const response = await fetch('/api/cart', {
+                credentials: 'include'
+            });
             if (!response.ok) throw new Error('Error al consultar el carrito');
 
             const cart = await response.json();
@@ -197,11 +269,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    function getCartHeaders(includeContentType = false) {
+        const headers = {};
+        if (includeContentType) headers['Content-Type'] = 'application/json';
+        const csrf = getCsrfToken();
+        if (csrf) headers['X-XSRF-TOKEN'] = csrf;
+        return headers;
+    }
+
     window.handleAddToCart = async function(productId) {
         try {
             const response = await fetch('/api/cart/add', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                headers: getCartHeaders(true),
                 body: JSON.stringify({ productId, cantidad: 1 })
             });
 
@@ -212,11 +293,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const updatedCart = await response.json();
             updateCartUI(updatedCart);
-            showToast('¡Juguete añadido al carrito! 🧸', 'success');
-
-            // Optionally bounce cart icon
-            cartCountBadge.classList.add('bounce');
-            setTimeout(() => cartCountBadge.classList.remove('bounce'), 600);
+            showToast('¡Juguete añadido al carrito de compras!', 'success');
 
         } catch (error) {
             showToast(error.message, 'error');
@@ -227,7 +304,8 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await fetch('/api/cart/update', {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                headers: getCartHeaders(true),
                 body: JSON.stringify({ productId, cantidad })
             });
 
@@ -246,7 +324,9 @@ document.addEventListener('DOMContentLoaded', () => {
     window.handleRemoveCartItem = async function(productId) {
         try {
             const response = await fetch(`/api/cart/items/${productId}`, {
-                method: 'DELETE'
+                method: 'DELETE',
+                credentials: 'include',
+                headers: getCartHeaders(false)
             });
 
             if (!response.ok) throw new Error('Error al eliminar item del carrito');
@@ -263,7 +343,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!confirm('¿Estás seguro de vaciar el carrito?')) return;
 
         try {
-            const response = await fetch('/api/cart', { method: 'DELETE' });
+            const response = await fetch('/api/cart', {
+                method: 'DELETE',
+                credentials: 'include',
+                headers: getCartHeaders(false)
+            });
             if (!response.ok) throw new Error('Error al vaciar el carrito');
 
             loadCart();
@@ -275,7 +359,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function handleCheckout() {
         try {
-            const response = await fetch('/api/cart/checkout', { method: 'POST' });
+            const response = await fetch('/api/cart/checkout', {
+                method: 'POST',
+                credentials: 'include',
+                headers: getCartHeaders(false)
+            });
 
             if (!response.ok) {
                 const errData = await response.json();
@@ -284,11 +372,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const summary = await response.json();
             loadCart();
-            loadProducts(); // Refresh stock
+            loadProducts();
             closeCartDrawer();
 
             alert(`🎉 ¡Compra realizada con éxito!\n\nHas adquirido ${summary.totalItems} juguete(s) por un total de S/ ${parseFloat(summary.total).toFixed(2)}.\n\n¡Gracias por tu compra en Juguetería Mágica!`);
-            showToast('¡Gracias por tu compra! Pedido registrado 🎁', 'success');
+            showToast('¡Gracias por tu compra! Pedido registrado', 'success');
 
         } catch (error) {
             showToast(error.message, 'error');
@@ -302,9 +390,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!cart.items || cart.items.length === 0) {
             cartItemsList.innerHTML = `
-                <div style="text-align: center; padding: 40px 0; color: var(--text-secondary);">
-                    <i class="fa-solid fa-basket-shopping" style="font-size: 3rem; margin-bottom: 12px; opacity: 0.3;"></i>
-                    <p>Tu carrito está vacío</p>
+                <div style="text-align: center; padding: 40px 0; color: var(--text-muted);">
+                    <i class="fa-solid fa-basket-shopping" style="font-size: 2.8rem; margin-bottom: 12px; opacity: 0.3;"></i>
+                    <p style="font-weight: 700;">Tu carrito está vacío</p>
                     <small>¡Explora el catálogo y agrega tus juguetes favoritos!</small>
                 </div>`;
             btnCheckout.disabled = true;
@@ -317,7 +405,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         cartItemsList.innerHTML = cart.items.map(item => `
             <div class="cart-item">
-                <img src="${item.product.imagenUrl || 'https://images.unsplash.com/photo-1558060370-d644479be967?w=500'}" 
+                <img src="${item.product.imagenUrl || 'https://images.unsplash.com/photo-1558060370-d644479be967?w=500'}"
                      alt="${escapeHtml(item.product.nombre)}" class="cart-item-img">
                 <div class="cart-item-info">
                     <div class="cart-item-title">${escapeHtml(item.product.nombre)}</div>
@@ -329,7 +417,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 </div>
                 <div style="text-align: right;">
-                    <div style="font-weight: 800; font-size: 0.95rem; color: var(--primary-color);">
+                    <div style="font-weight: 800; font-size: 0.95rem; color: var(--coral-accent);">
                         S/ ${parseFloat(item.subtotal).toFixed(2)}
                     </div>
                     <button class="btn-remove-item" onclick="handleRemoveCartItem(${item.product.id})" title="Eliminar del carrito">
@@ -345,12 +433,55 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // ==========================================================================
-    // API REST - Admin Product Creation
+    // API REST - Admin Authentication & Operations (Login, JWT, Product CRUD)
     // ==========================================================================
+
+    async function handleLoginSubmit(e) {
+        e.preventDefault();
+
+        const usernameInput = document.getElementById('login-username');
+        const passwordInput = document.getElementById('login-password');
+
+        const username = usernameInput ? usernameInput.value.trim() : '';
+        const password = passwordInput ? passwordInput.value : '';
+
+        try {
+            const response = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+
+            if (!response.ok) {
+                const errData = await response.json().catch(() => ({}));
+                throw new Error(errData.message || 'Credenciales de administrador inválidas');
+            }
+
+            const data = await response.json();
+            const token = data.token || data.accessToken;
+            sessionStorage.setItem('adminToken', token);
+
+            if (loginModal) loginModal.classList.add('hidden');
+            if (loginForm) loginForm.reset();
+            updateAdminUI();
+            loadProducts();
+            showToast('¡Sesión de administrador iniciada con éxito!', 'success');
+        } catch (error) {
+            showToast(error.message, 'error');
+        }
+    }
+
+    function handleLogoutAdmin() {
+        sessionStorage.removeItem('adminToken');
+        updateAdminUI();
+        loadProducts();
+        showToast('Sesión de administrador cerrada', 'info');
+    }
 
     async function handleSaveProduct(e) {
         e.preventDefault();
 
+        const productId = document.getElementById('product-id').value;
         const productData = {
             nombre: document.getElementById('product-nombre').value.trim(),
             categoria: document.getElementById('product-categoria').value,
@@ -361,26 +492,85 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         try {
-            const response = await fetch('/api/products', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+            const url = productId ? `/api/products/${productId}` : '/api/products';
+            const method = productId ? 'PUT' : 'POST';
+
+            const response = await fetch(url, {
+                method: method,
+                headers: getAdminHeaders(),
                 body: JSON.stringify(productData)
             });
 
             if (!response.ok) {
-                const errData = await response.json();
+                if (response.status === 401 || response.status === 403) {
+                    sessionStorage.removeItem('adminToken');
+                    updateAdminUI();
+                    adminModal.classList.add('hidden');
+                    if (loginModal) loginModal.classList.remove('hidden');
+                    throw new Error('Sesión no autorizada o token expirado. Por favor inicie sesión.');
+                }
+                const errData = await response.json().catch(() => ({}));
                 throw new Error(errData.message || 'Error al guardar el producto');
             }
 
             adminModal.classList.add('hidden');
             productForm.reset();
+            document.getElementById('product-id').value = '';
             loadProducts();
-            showToast('¡Nuevo juguete agregado al catálogo exitosamente! 🚀', 'success');
+            showToast(productId ? '¡Juguete actualizado exitosamente!' : '¡Nuevo juguete agregado al catálogo!', 'success');
 
         } catch (error) {
             showToast(error.message, 'error');
         }
     }
+
+    window.handleEditProduct = async function(id) {
+        try {
+            const response = await fetch(`/api/products/${id}`);
+            if (!response.ok) throw new Error('No se pudo cargar la información del juguete');
+
+            const product = await response.json();
+
+            document.getElementById('product-id').value = product.id;
+            document.getElementById('product-nombre').value = product.nombre;
+            document.getElementById('product-categoria').value = product.categoria;
+            document.getElementById('product-precio').value = product.precio;
+            document.getElementById('product-stock').value = product.stock;
+            document.getElementById('product-imagen').value = product.imagenUrl || '';
+            document.getElementById('product-descripcion').value = product.descripcion || '';
+
+            document.getElementById('modal-title').textContent = 'Editar Juguete';
+            adminModal.classList.remove('hidden');
+        } catch (error) {
+            showToast(error.message, 'error');
+        }
+    };
+
+    window.handleDeleteProduct = async function(id) {
+        if (!confirm('¿Estás seguro de que deseas eliminar este juguete del catálogo?')) return;
+
+        try {
+            const response = await fetch(`/api/products/${id}`, {
+                method: 'DELETE',
+                headers: getAdminHeaders()
+            });
+
+            if (!response.ok) {
+                if (response.status === 401 || response.status === 403) {
+                    sessionStorage.removeItem('adminToken');
+                    updateAdminUI();
+                    if (loginModal) loginModal.classList.remove('hidden');
+                    throw new Error('Sesión no autorizada o token expirado. Por favor inicie sesión.');
+                }
+                throw new Error('Error al eliminar el producto');
+            }
+
+            loadProducts();
+            showToast('Juguete eliminado del catálogo', 'success');
+        } catch (error) {
+            showToast(error.message, 'error');
+        }
+    };
 
     // --- Drawer Helpers ---
     function openCartDrawer() {
@@ -407,7 +597,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         setTimeout(() => {
             toast.style.opacity = '0';
-            toast.style.transform = 'translateY(20px)';
+            toast.style.transform = 'translateY(10px)';
             setTimeout(() => toast.remove(), 300);
         }, 3000);
     }
