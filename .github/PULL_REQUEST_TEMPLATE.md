@@ -1,8 +1,10 @@
 ## 📌 Descripción de los Cambios
 <!-- Proporciona un resumen claro y conciso de los cambios realizados y la motivación detrás de ellos. -->
 
-- **Ticket / Problema abordado**: Fixes #
-- **Módulo(s) afectado(s)**: `controller`, `service`, `repository`, `dto`, `docs`, `ci`
+- **Responsable**: `@kiba450parodi-ux` (o usuario correspondiente)
+- **Rama origen**: `qa/docs-ci-kiba` -> **Rama destino**: `main`
+- **Ticket / Issue abordado**: Fixes #
+- **Módulo(s) afectado(s)**: `docs`, `ci`, `postman`, `README`, `CONTRIBUTING`
 
 ---
 
@@ -12,27 +14,29 @@
 - [ ] 🐛 **Bugfix** (Cambio que corrige un problema o fallo en el código)
 - [ ] ✨ **Nueva Funcionalidad** (Añade una característica sin romper la compatibilidad)
 - [ ] ♻️ **Refactorización** (Mejora del código existente sin cambiar comportamiento externo)
-- [ ] 📝 **Documentación** (Actualización de README, API docs o diagramas)
-- [ ] 🧪 **Pruebas** (Añadido o actualización de tests unitarios o colecciones Postman)
-- [ ] ⚙️ **CI/CD / Configuración** (Ajustes en GitHub Actions, Maven o propiedades del sistema)
+- [ ] 📝 **Documentación** (Actualización de README, CONTRIBUTING, API docs o diagramas)
+- [ ] 🧪 **Pruebas** (Añadido o actualización de tests unitarios, checklist de navegador o colección Postman)
+- [ ] ⚙️ **CI/CD / Configuración** (Ajustes en GitHub Actions, Maven, pom.xml o Docker)
 
 ---
 
 ## 🖼️ Evidencias / Capturas de Pantalla
-<!-- Si aplicaste cambios visuales en el frontend o probaste endpoints en Postman, adjunta aquí capturas de pantalla, GIFs o fragmentos de logs. -->
+<!-- Adjunta capturas de pantalla de la colección de Postman ejecutada y el checklist de navegador. -->
 
-| Escenario / Endpoint | Captura de Pantalla / Log Evidencia |
+| Escenario / Prueba | Evidencia / Captura / Log |
 | :--- | :--- |
-| **Prueba en Postman / Navegador** | *(Adjuntar imagen aquí)* |
+| **Ejecución Colección Postman** | *(Adjuntar captura de runner de Postman o Newman)* |
+| **Prueba en Navegador (UI)** | *(Adjuntar captura de catálogo / carrito / checkout)* |
+| **Pipeline GitHub Actions CI** | *(Adjuntar captura o enlace al Run con checks en verde)* |
 
 ---
 
 ## 🧪 Pruebas Realizadas
-<!-- Describe las pruebas ejecutadas para verificar que tus cambios funcionan correctamente. -->
 
-- [ ] **Pruebas Unitarias / Contexto Spring**: Se ejecutó `./mvnw test` obteniendo `BUILD SUCCESS`.
-- [ ] **Pruebas de API con Postman**: Se probaron los endpoints modificados enviando payloads válidos e inválidos.
-- [ ] **Pruebas Manuales en Navegador**: Se comprobó la interfaz web en Chrome / Firefox.
+- [ ] **Pruebas Unitarias / Integración Spring**: Se ejecutó `.\mvnw.cmd test` obteniendo `BUILD SUCCESS` (44/44 tests pasando).
+- [ ] **Sintaxis JavaScript**: Se ejecutó `node --check src/main/resources/static/js/app.js`.
+- [ ] **Pruebas API con Postman**: Se ejecutó la colección `ecommerce.postman_collection.json` validando login JWT, catálogo, CRUD y códigos 400, 401, 403, 404 y 409.
+- [ ] **Checklist de Navegador**: Se completó la matriz de pruebas en `docs/testing/browser-checklist.md`.
 
 ---
 
@@ -40,10 +44,8 @@
 
 Antes de solicitar la revisión de este Pull Request, confirma que has completado los siguientes pasos:
 
-- [ ] Mi código sigue la guía de estilo del proyecto y cumple con los estándares de Java 21 / Spring Boot.
-- [ ] He realizado una auto-revisión meticulosa de mi propio código.
-- [ ] No modifiqué archivos ni código fuera del alcance asignado a esta tarea.
-- [ ] He actualizado la documentación correspondiente en la carpeta `docs/` o `README.md` si aplica.
-- [ ] Mis cambios no generan nuevas advertencias o warnings en el proceso de compilación (`./mvnw clean compile`).
-- [ ] He añadido o actualizado los tests necesarios y todos pasan correctamente.
-- [ ] El pipeline de Integración Continua (GitHub Actions) ha finalizado en verde.
+- [ ] Mi código y documentación siguen la guía de estilo del proyecto.
+- [ ] He realizado una auto-revisión meticulosa de mis cambios.
+- [ ] `pom.xml` utiliza la versión oficial estable de Spring Boot (3.4.0) resolviendo descargas en Maven Central.
+- [ ] Se actualizaron `README.md`, `CONTRIBUTING.md` y `docs/api.md` con la información del proyecto desde cero.
+- [ ] El pipeline de Integración Continua (GitHub Actions) en Java 21 con H2 y MySQL 8.4 pasa en **verde**.

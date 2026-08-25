@@ -1,235 +1,74 @@
-# 📖 Especificación de la API REST (`docs/api.md`)
+# 📖 Especificación de la API REST - E-Commerce
 
-Esta documentación especifica los endpoints RESTful expuestos por la aplicación Spring Boot para el catálogo de productos y la gestión del carrito de compras.
-
-- **Base URL**: `http://localhost:8080`
-- **Formato de intercambio**: `JSON` (`application/json`)
-- **Manejo de Sesión**: La API del carrito utiliza la cookie de sesión HTTP `JSESSIONID` manejada automáticamente por navegadores y clientes HTTP como Postman.
+Documentación completa de los servicios web RESTful del sistema de **E-commerce**, incluyendo autenticación JWT, esquemas de datos, códigos de estado HTTP y ejemplos de uso en cURL.
 
 ---
 
-## 🛍️ Módulo de Productos (`ProductController`)
+## 🌐 Configuración General
 
-### 1. Obtener Lista de Productos
-Retorna todos los productos del catálogo. Permite filtrar opcionalmente por categoría o término de búsqueda.
+- **URL Base**: `http://localhost:8080` (en entorno local)
+- **Formato de Comunicación**: JSON (`Content-Type: application/json; charset=UTF-8`)
 
-- **URL**: `/api/products`
-- **Método HTTP**: `GET`
-- **Parámetros Query**:
-  - `categoria` *(opcional, string)*: Nombre exacto o parcial de la categoría (ej. `Peluches`).
-  - `query` *(opcional, string)*: Palabra clave para buscar en el nombre del producto (ej. `Oso`).
+---
 
-#### Request Example
-`GET /api/products?categoria=Peluches&query=Oso`
+## 🔐 Autenticación y Autorización
 
-#### Response JSON (`200 OK`)
-```json
-[
-  {
-    "id": 1,
-    "nombre": "Oso de Peluche Gigante Huggy",
-    "descripcion": "Peluche supersuave de 80 cm, hipoalergénico e ideal para abrazos.",
-    "precio": 89.90,
-    "stock": 25,
-    "categoria": "Peluches",
-    "imagenUrl": "https://images.unsplash.com/photo-1559454403-b8fb88521f11?w=500&auto=format&fit=crop"
-  }
-]
+La API implementa autenticación basada en **JSON Web Tokens (JWT)** para la gestión y administración del catálogo de productos.
+
+### Encabezado de Autenticación
+Para acceder a endpoints protegidos (operaciones `POST`, `PUT`, `DELETE` en productos), se debe incluir el token devuelto por el servicio de Login en el encabezado HTTP:
+
+```http
+Authorization: Bearer <tu_token_jwt>
 ```
 
-#### Códigos HTTP Esperados
-- `200 OK`: Lista retornada correctamente (puede ser un arreglo vacío si no hay coincidencias).
-- `500 Internal Server Error`: Error interno del servidor.
-
 ---
 
-### 2. Obtener Producto por ID
-Obtiene los detalles completos de un producto específico mediante su identificador.
+## 🛠️ Esquemas de Datos (DTOs)
 
-- **URL**: `/api/products/{id}`
-- **Método HTTP**: `GET`
-- **Parámetros Path**:
-  - `id` *(obligatorio, Long)*: Identificador único del producto (ej. `1`).
+### `LoginRequest`
+```json
+{
+  "username": "admin",
+  "password": "password"
+}
+```
 
-#### Request Example
-`GET /api/products/1`
+### `TokenResponse`
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiJ9...",
+  "tokenType": "Bearer",
+  "expiresInSeconds": 3600
+}
+```
 
-#### Response JSON (`200 OK`)
+### `ProductDTO`
 ```json
 {
   "id": 1,
-  "nombre": "Oso de Peluche Gigante Huggy",
-  "descripcion": "Peluche supersuave de 80 cm, hipoalergénico e ideal para abrazos.",
-  "precio": 89.90,
-  "stock": 25,
-  "categoria": "Peluches",
-  "imagenUrl": "https://images.unsplash.com/photo-1559454403-b8fb88521f11?w=500&auto=format&fit=crop"
+  "nombre": "Laptop Gamer Pro",
+  "descripcion": "Intel i9, 32GB RAM, RTX 4080",
+  "precio": 1999.99,
+  "stock": 10,
+  "categoria": "Laptops",
+  "imagenUrl": "https://example.com/laptop.jpg"
 }
 ```
 
-#### Response JSON (`404 Not Found`)
+### `ProductRequest`
 ```json
 {
-  "timestamp": "2026-08-19T13:30:00.000",
-  "status": 404,
-  "error": "Not Found",
-  "message": "Producto no encontrado con ID: 999"
+  "nombre": "Teclado Mecánico RGB",
+  "descripcion": "Switches Blue táctiles",
+  "precio": 89.99,
+  "stock": 15,
+  "categoria": "Periféricos",
+  "imagenUrl": "https://example.com/teclado.jpg"
 }
 ```
 
-#### Códigos HTTP Esperados
-- `200 OK`: Producto encontrado exitosamente.
-- `404 Not Found`: El producto solicitado no existe en la base de datos.
-
----
-
-### 3. Crear Producto
-Registra un nuevo producto en el catálogo.
-
-- **URL**: `/api/products`
-- **Método HTTP**: `POST`
-- **Headers**: `Content-Type: application/json`
-
-#### Request JSON
-```json
-{
-  "nombre": "Pista de Carreras Gran Turismo",
-  "descripcion": "Pista eléctrica de 3 metros con dos controles.",
-  "precio": 119.90,
-  "stock": 12,
-  "categoria": "Vehículos",
-  "imagenUrl": "https://images.unsplash.com/photo-1594787318286-3d835c1d207f?w=500&auto=format&fit=crop"
-}
-```
-
-#### Response JSON (`201 Created`)
-```json
-{
-  "id": 7,
-  "nombre": "Pista de Carreras Gran Turismo",
-  "descripcion": "Pista eléctrica de 3 metros con dos controles.",
-  "precio": 119.90,
-  "stock": 12,
-  "categoria": "Vehículos",
-  "imagenUrl": "https://images.unsplash.com/photo-1594787318286-3d835c1d207f?w=500&auto=format&fit=crop"
-}
-```
-
-#### Response JSON (`400 Bad Request`)
-```json
-{
-  "timestamp": "2026-08-19T13:30:00.000",
-  "status": 400,
-  "error": "Bad Request",
-  "message": "El nombre del producto es obligatorio"
-}
-```
-
-#### Códigos HTTP Esperados
-- `201 Created`: Producto creado con éxito.
-- `400 Bad Request`: Datos de producto inválidos (nombre vacío, precio o stock negativo).
-
----
-
-### 4. Actualizar Producto
-Modifica la información existente de un producto por su ID.
-
-- **URL**: `/api/products/{id}`
-- **Método HTTP**: `PUT`
-- **Parámetros Path**: `id` *(Long)*
-
-#### Request JSON
-```json
-{
-  "nombre": "Oso de Peluche Gigante Huggy Deluxe",
-  "descripcion": "Edición especial con lazo rojo y pelaje premium.",
-  "precio": 99.90,
-  "stock": 30,
-  "categoria": "Peluches",
-  "imagenUrl": "https://images.unsplash.com/photo-1559454403-b8fb88521f11?w=500&auto=format&fit=crop"
-}
-```
-
-#### Response JSON (`200 OK`)
-```json
-{
-  "id": 1,
-  "nombre": "Oso de Peluche Gigante Huggy Deluxe",
-  "descripcion": "Edición especial con lazo rojo y pelaje premium.",
-  "precio": 99.90,
-  "stock": 30,
-  "categoria": "Peluches",
-  "imagenUrl": "https://images.unsplash.com/photo-1559454403-b8fb88521f11?w=500&auto=format&fit=crop"
-}
-```
-
-#### Códigos HTTP Esperados
-- `200 OK`: Producto actualizado exitosamente.
-- `400 Bad Request`: Datos inválidos en la petición.
-- `404 Not Found`: No existe el producto con el ID especificado.
-
----
-
-### 5. Eliminar Producto
-Elimina un producto del catálogo.
-
-- **URL**: `/api/products/{id}`
-- **Método HTTP**: `DELETE`
-- **Parámetros Path**: `id` *(Long)*
-
-#### Response Body (`204 No Content`)
-*(Sin contenido en la respuesta)*
-
-#### Códigos HTTP Esperados
-- `204 No Content`: Eliminación completada correctamente.
-- `404 Not Found`: Producto no encontrado.
-
----
-
-## 🛒 Módulo del Carrito (`CartController`)
-
-### 1. Obtener Carrito Actual
-Consulta el estado actual del carrito de compras asociado a la sesión HTTP.
-
-- **URL**: `/api/cart`
-- **Método HTTP**: `GET`
-
-#### Response JSON (`200 OK`)
-```json
-{
-  "items": [
-    {
-      "product": {
-        "id": 1,
-        "nombre": "Oso de Peluche Gigante Huggy",
-        "descripcion": "Peluche supersuave de 80 cm, hipoalergénico e ideal para abrazos.",
-        "precio": 89.90,
-        "stock": 25,
-        "categoria": "Peluches",
-        "imagenUrl": "https://images.unsplash.com/photo-1559454403-b8fb88521f11?w=500&auto=format&fit=crop"
-      },
-      "cantidad": 2,
-      "subtotal": 179.80
-    }
-  ],
-  "total": 179.80,
-  "totalItems": 2
-}
-```
-
-#### Códigos HTTP Esperados
-- `200 OK`: Resumen del carrito retornado exitosamente (si está vacío, `items` es `[]`, `total` es `0` y `totalItems` es `0`).
-
----
-
-### 2. Agregar Producto al Carrito
-Agrega una cantidad especificada de un producto al carrito activo de la sesión.
-
-- **URL**: `/api/cart/add`
-- **Método HTTP**: `POST`
-- **Headers**: `Content-Type: application/json`
-
-#### Request JSON
+### `AddToCartRequest`
 ```json
 {
   "productId": 1,
@@ -237,54 +76,7 @@ Agrega una cantidad especificada de un producto al carrito activo de la sesión.
 }
 ```
 
-#### Response JSON (`200 OK`)
-```json
-{
-  "items": [
-    {
-      "product": {
-        "id": 1,
-        "nombre": "Oso de Peluche Gigante Huggy",
-        "descripcion": "Peluche supersuave de 80 cm, hipoalergénico e ideal para abrazos.",
-        "precio": 89.90,
-        "stock": 25,
-        "categoria": "Peluches",
-        "imagenUrl": "https://images.unsplash.com/photo-1559454403-b8fb88521f11?w=500&auto=format&fit=crop"
-      },
-      "cantidad": 2,
-      "subtotal": 179.80
-    }
-  ],
-  "total": 179.80,
-  "totalItems": 2
-}
-```
-
-#### Response JSON (`400 Bad Request`)
-```json
-{
-  "timestamp": "2026-08-19T13:30:00.000",
-  "status": 400,
-  "error": "Bad Request",
-  "message": "La cantidad debe ser mayor a 0"
-}
-```
-
-#### Códigos HTTP Esperados
-- `200 OK`: Producto agregado o cantidad incrementada correctamente.
-- `400 Bad Request`: `productId` nulo, cantidad <= 0 o stock insuficiente.
-- `404 Not Found`: El `productId` no corresponde a ningún producto existente.
-
----
-
-### 3. Actualizar Cantidad en Carrito
-Establece la cantidad exacta de un producto en el carrito. Si la cantidad enviada es `0`, el item se elimina automáticamente.
-
-- **URL**: `/api/cart/update`
-- **Método HTTP**: `PUT`
-- **Headers**: `Content-Type: application/json`
-
-#### Request JSON
+### `UpdateCartRequest`
 ```json
 {
   "productId": 1,
@@ -292,110 +84,243 @@ Establece la cantidad exacta de un producto en el carrito. Si la cantidad enviad
 }
 ```
 
-#### Response JSON (`200 OK`)
+### `CartSummaryDTO`
 ```json
 {
   "items": [
     {
-      "product": {
-        "id": 1,
-        "nombre": "Oso de Peluche Gigante Huggy",
-        "descripcion": "Peluche supersuave de 80 cm, hipoalergénico e ideal para abrazos.",
-        "precio": 89.90,
-        "stock": 25,
-        "categoria": "Peluches",
-        "imagenUrl": "https://images.unsplash.com/photo-1559454403-b8fb88521f11?w=500&auto=format&fit=crop"
-      },
-      "cantidad": 5,
-      "subtotal": 449.50
-    }
-  ],
-  "total": 449.50,
-  "totalItems": 5
-}
-```
-
-#### Códigos HTTP Esperados
-- `200 OK`: Cantidad actualizada exitosamente.
-- `400 Bad Request`: `productId` nulo o la cantidad solicitada excede el stock disponible.
-- `404 Not Found`: Producto no existente en la base de datos.
-
----
-
-### 4. Eliminar Item Específico del Carrito
-Remueve por completo un producto del carrito actual sin importar su cantidad.
-
-- **URL**: `/api/cart/items/{productId}`
-- **Método HTTP**: `DELETE`
-- **Parámetros Path**: `productId` *(Long)*
-
-#### Response JSON (`200 OK`)
-```json
-{
-  "items": [],
-  "total": 0.00,
-  "totalItems": 0
-}
-```
-
-#### Códigos HTTP Esperados
-- `200 OK`: Item removido y carrito actualizado retornado.
-
----
-
-### 5. Vaciar Carrito Completo
-Elimina todos los elementos guardados en la sesión del carrito.
-
-- **URL**: `/api/cart`
-- **Método HTTP**: `DELETE`
-
-#### Response Body (`204 No Content`)
-*(Sin contenido)*
-
-#### Códigos HTTP Esperados
-- `204 No Content`: Carrito vaciado exitosamente.
-
----
-
-### 6. Procesar Compra (Checkout)
-Procesa la compra del carrito actual, descuenta el stock de los productos en la base de datos y vacía la sesión.
-
-- **URL**: `/api/cart/checkout`
-- **Método HTTP**: `POST`
-
-#### Response JSON (`200 OK`)
-```json
-{
-  "items": [
-    {
-      "product": {
-        "id": 1,
-        "nombre": "Oso de Peluche Gigante Huggy",
-        "descripcion": "Peluche supersuave de 80 cm, hipoalergénico e ideal para abrazos.",
-        "precio": 89.90,
-        "stock": 23,
-        "categoria": "Peluches",
-        "imagenUrl": "https://images.unsplash.com/photo-1559454403-b8fb88521f11?w=500&auto=format&fit=crop"
-      },
+      "productId": 1,
+      "nombreProducto": "Laptop Gamer Pro",
+      "precioUnitario": 1999.99,
       "cantidad": 2,
-      "subtotal": 179.80
+      "subtotal": 3999.98,
+      "imagenUrl": "https://example.com/laptop.jpg"
     }
   ],
-  "total": 179.80,
+  "total": 3999.98,
   "totalItems": 2
 }
 ```
 
-#### Response JSON (`400 Bad Request`)
+### `ApiError` (Estructura de Errores Standard)
 ```json
 {
-  "timestamp": "2026-08-19T13:30:00.000",
+  "timestamp": "2026-08-25T18:00:00",
   "status": 400,
   "error": "Bad Request",
-  "message": "El carrito está vacío, no se puede procesar la compra."
+  "message": "La cantidad solicitada supera el stock disponible",
+  "path": "/api/cart/add"
 }
 ```
 
-#### Códigos HTTP Esperados
-- `200 OK`: Compra procesada correctamente y stock actualizado en base de datos.
-- `400 Bad Request`: Carrito vacío o stock insuficiente al momento del checkout.
+---
+
+## 📌 Endpoints de la API
+
+### 1. Autenticación (`/api/auth`)
+
+#### `POST /api/auth/login`
+Autentica un usuario administrativo y genera un JWT válido.
+
+- **Acceso**: Público
+- **Cuerpo HTTP**: `LoginRequest`
+- **Respuestas**:
+  - `200 OK`: Retorna `TokenResponse`.
+  - `401 Unauthorized`: Credenciales inválidas.
+
+**Ejemplo cURL**:
+```bash
+curl -X POST http://localhost:8080/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"username":"admin", "password":"password"}'
+```
+
+---
+
+### 2. Catálogo de Productos (`/api/products`)
+
+#### `GET /api/products`
+Obtiene la lista de productos del catálogo. Permite filtrado opcional.
+
+- **Acceso**: Público
+- **Parámetros Query**:
+  - `categoria` (string, opcional): Filtra por categoría exacta.
+  - `query` (string, opcional): Búsqueda por coincidencia parcial en nombre o descripción.
+- **Respuestas**:
+  - `200 OK`: Arreglo de `ProductDTO`.
+
+**Ejemplo cURL**:
+```bash
+curl -X GET "http://localhost:8080/api/products?categoria=Perifericos"
+```
+
+#### `GET /api/products/{id}`
+Obtiene el detalle de un producto específico por su ID.
+
+- **Acceso**: Público
+- **Respuestas**:
+  - `200 OK`: Objeto `ProductDTO`.
+  - `404 Not Found`: Si el producto no existe.
+
+**Ejemplo cURL**:
+```bash
+curl -X GET http://localhost:8080/api/products/1
+```
+
+#### `POST /api/products`
+Crea un nuevo producto en el catálogo.
+
+- **Acceso**: Protegido (`ROLE_ADMIN`)
+- **Headers**: `Authorization: Bearer <token>`
+- **Cuerpo HTTP**: `ProductRequest`
+- **Respuestas**:
+  - `201 Created`: Producto creado exitosamente (`ProductDTO`).
+  - `400 Bad Request`: Datos de producto inválidos o incompletos.
+  - `401 Unauthorized`: Encabezado JWT ausente.
+  - `403 Forbidden`: Token JWT inválido o con permisos insuficientes.
+
+**Ejemplo cURL**:
+```bash
+curl -X POST http://localhost:8080/api/products \
+  -H "Authorization: Bearer <tu_token_jwt>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "nombre": "Teclado RGB",
+    "descripcion": "Teclado mecánico",
+    "precio": 89.99,
+    "stock": 20,
+    "categoria": "Periféricos",
+    "imagenUrl": "https://example.com/teclado.jpg"
+  }'
+```
+
+#### `PUT /api/products/{id}`
+Actualiza la información de un producto existente.
+
+- **Acceso**: Protegido (`ROLE_ADMIN`)
+- **Headers**: `Authorization: Bearer <token>`
+- **Cuerpo HTTP**: `ProductRequest`
+- **Respuestas**:
+  - `200 OK`: Producto actualizado (`ProductDTO`).
+  - `400 Bad Request`: Datos inválidos.
+  - `401 Unauthorized` / `403 Forbidden`: Error de autenticación.
+  - `404 Not Found`: Si el ID de producto no existe.
+
+**Ejemplo cURL**:
+```bash
+curl -X PUT http://localhost:8080/api/products/1 \
+  -H "Authorization: Bearer <tu_token_jwt>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "nombre": "Teclado RGB Pro",
+    "descripcion": "Teclado mecánico switches red",
+    "precio": 99.99,
+    "stock": 25,
+    "categoria": "Periféricos",
+    "imagenUrl": "https://example.com/teclado-pro.jpg"
+  }'
+```
+
+#### `DELETE /api/products/{id}`
+Elimina un producto del catálogo.
+
+- **Acceso**: Protegido (`ROLE_ADMIN`)
+- **Headers**: `Authorization: Bearer <token>`
+- **Respuestas**:
+  - `204 No Content`: Eliminación exitosa.
+  - `401 Unauthorized` / `403 Forbidden`: Error de autenticación.
+  - `404 Not Found`: Si el producto no existe.
+
+**Ejemplo cURL**:
+```bash
+curl -X DELETE http://localhost:8080/api/products/1 \
+  -H "Authorization: Bearer <tu_token_jwt>"
+```
+
+---
+
+### 3. Carrito de Compras (`/api/cart`)
+
+El carrito está vinculado a la sesión HTTP del cliente.
+
+#### `GET /api/cart`
+Obtiene el resumen actual del carrito de compras.
+
+- **Acceso**: Público
+- **Respuestas**:
+  - `200 OK`: Objeto `CartSummaryDTO`.
+
+**Ejemplo cURL**:
+```bash
+curl -X GET http://localhost:8080/api/cart -b "JSESSIONID=..."
+```
+
+#### `POST /api/cart/add`
+Agrega un producto al carrito o incrementa su cantidad.
+
+- **Acceso**: Público
+- **Cuerpo HTTP**: `AddToCartRequest`
+- **Respuestas**:
+  - `200 OK`: Resumen del carrito actualizado (`CartSummaryDTO`).
+  - `400 Bad Request`: Si la cantidad solicitada supera el stock disponible o es `<= 0`.
+  - `404 Not Found`: Si el `productId` no existe.
+
+**Ejemplo cURL**:
+```bash
+curl -X POST http://localhost:8080/api/cart/add \
+  -H "Content-Type: application/json" \
+  -d '{"productId": 1, "cantidad": 2}'
+```
+
+#### `PUT /api/cart/update`
+Actualiza la cantidad específica de un ítem en el carrito.
+
+- **Acceso**: Público
+- **Cuerpo HTTP**: `UpdateCartRequest`
+- **Respuestas**:
+  - `200 OK`: `CartSummaryDTO`.
+  - `400 Bad Request`: Si supera el stock o la cantidad es inválida.
+
+#### `DELETE /api/cart/items/{productId}`
+Remueve un producto específico del carrito.
+
+- **Acceso**: Público
+- **Respuestas**:
+  - `200 OK`: `CartSummaryDTO` actualizado.
+
+#### `POST /api/cart/checkout`
+Procesa la compra de los artículos presentes en el carrito, reduciendo el stock correspondiente y vaciando el carrito.
+
+- **Acceso**: Público
+- **Respuestas**:
+  - `200 OK`: `CartSummaryDTO` resultante de la transacción.
+  - `400 Bad Request`: Carrito vacío o stock insuficiente.
+  - `409 Conflict`: Conflicto de datos / concurrencia en la actualización de stock.
+
+**Ejemplo cURL**:
+```bash
+curl -X POST http://localhost:8080/api/cart/checkout
+```
+
+#### `DELETE /api/cart`
+Vacía completamente el carrito de compras.
+
+- **Acceso**: Público
+- **Respuestas**:
+  - `204 No Content`: Carrito vaciado.
+
+---
+
+## 🚦 Matriz de Códigos de Estado HTTP
+
+| Código | Estado | Descripción |
+| :---: | :--- | :--- |
+| **200** | `OK` | La solicitud fue procesada correctamente. |
+| **201** | `Created` | El recurso (producto) fue creado exitosamente. |
+| **204** | `No Content` | Solicitud procesada con éxito sin cuerpo de respuesta. |
+| **400** | `Bad Request` | Error de validación en la solicitud (campos faltantes, stock excedido). |
+| **401** | `Unauthorized` | Requiere autenticación JWT o credenciales inválidas. |
+| **403** | `Forbidden` | No posee los permisos o roles requeridos (`ROLE_ADMIN`). |
+| **404** | `Not Found` | El recurso solicitado no existe. |
+| **409** | `Conflict` | Conflicto de integridad o concurrencia de stock. |
+| **500** | `Internal Server Error` | Excepción no controlada en el servidor. |
