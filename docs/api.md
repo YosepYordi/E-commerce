@@ -241,33 +241,43 @@ curl -X DELETE http://localhost:8080/api/products/1 \
 
 ### 3. Carrito de Compras (`/api/cart`)
 
-El carrito está vinculado a la sesión HTTP del cliente.
+El carrito está vinculado a la sesión HTTP del cliente. 
+
+> **Protección CSRF (Cross-Site Request Forgery)**:
+> Por configuración de seguridad en `SecurityConfig`, las solicitudes de modificación (`POST`, `PUT`, `DELETE`) sobre `/api/cart/**` requieren la cookie de sesión `XSRF-TOKEN` (emitida en respuestas `GET`) y la cabecera HTTP `X-XSRF-TOKEN`. Si una mutación no reenvía esta cabecera, el servidor responderá con HTTP `403 Forbidden`.
 
 #### `GET /api/cart`
-Obtiene el resumen actual del carrito de compras.
+Obtiene el resumen actual del carrito de compras y emite la cookie `XSRF-TOKEN`.
 
 - **Acceso**: Público
 - **Respuestas**:
   - `200 OK`: Objeto `CartSummaryDTO`.
 
-**Ejemplo cURL**:
+**Ejemplo cURL (Obtener cookie XSRF-TOKEN)**:
 ```bash
-curl -X GET http://localhost:8080/api/cart -b "JSESSIONID=..."
+curl -i -c cookies.txt -X GET http://localhost:8080/api/cart
 ```
 
 #### `POST /api/cart/add`
 Agrega un producto al carrito o incrementa su cantidad.
 
-- **Acceso**: Público
+- **Acceso**: Público (Requiere token CSRF)
+- **Headers**: `Content-Type: application/json`, `X-XSRF-TOKEN: <valor_cookie_XSRF-TOKEN>`
 - **Cuerpo HTTP**: `AddToCartRequest`
 - **Respuestas**:
   - `200 OK`: Resumen del carrito actualizado (`CartSummaryDTO`).
   - `400 Bad Request`: Si la cantidad solicitada supera el stock disponible o es `<= 0`.
+  - `403 Forbidden`: Token CSRF ausente o inválido.
   - `404 Not Found`: Si el `productId` no existe.
 
 **Ejemplo cURL**:
 ```bash
+# Extrar token XSRF-TOKEN guardado en cookies.txt:
+# XSRF_TOKEN=$(grep XSRF-TOKEN cookies.txt | awk '{print $7}')
+
 curl -X POST http://localhost:8080/api/cart/add \
+  -b cookies.txt \
+  -H "X-XSRF-TOKEN: $XSRF_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"productId": 1, "cantidad": 2}'
 ```
@@ -275,39 +285,72 @@ curl -X POST http://localhost:8080/api/cart/add \
 #### `PUT /api/cart/update`
 Actualiza la cantidad específica de un ítem en el carrito.
 
-- **Acceso**: Público
+- **Acceso**: Público (Requiere token CSRF)
+- **Headers**: `Content-Type: application/json`, `X-XSRF-TOKEN: <valor_cookie_XSRF-TOKEN>`
 - **Cuerpo HTTP**: `UpdateCartRequest`
 - **Respuestas**:
   - `200 OK`: `CartSummaryDTO`.
   - `400 Bad Request`: Si supera el stock o la cantidad es inválida.
+  - `403 Forbidden`: Token CSRF ausente.
+
+**Ejemplo cURL**:
+```bash
+curl -X PUT http://localhost:8080/api/cart/update \
+  -b cookies.txt \
+  -H "X-XSRF-TOKEN: $XSRF_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"productId": 1, "cantidad": 5}'
+```
 
 #### `DELETE /api/cart/items/{productId}`
 Remueve un producto específico del carrito.
 
-- **Acceso**: Público
+- **Acceso**: Público (Requiere token CSRF)
+- **Headers**: `X-XSRF-TOKEN: <valor_cookie_XSRF-TOKEN>`
 - **Respuestas**:
   - `200 OK`: `CartSummaryDTO` actualizado.
+  - `403 Forbidden`: Token CSRF ausente.
+
+**Ejemplo cURL**:
+```bash
+curl -X DELETE http://localhost:8080/api/cart/items/1 \
+  -b cookies.txt \
+  -H "X-XSRF-TOKEN: $XSRF_TOKEN"
+```
 
 #### `POST /api/cart/checkout`
 Procesa la compra de los artículos presentes en el carrito, reduciendo el stock correspondiente y vaciando el carrito.
 
-- **Acceso**: Público
+- **Acceso**: Público (Requiere token CSRF)
+- **Headers**: `X-XSRF-TOKEN: <valor_cookie_XSRF-TOKEN>`
 - **Respuestas**:
   - `200 OK`: `CartSummaryDTO` resultante de la transacción.
   - `400 Bad Request`: Carrito vacío o stock insuficiente.
+  - `403 Forbidden`: Token CSRF ausente.
   - `409 Conflict`: Conflicto de datos / concurrencia en la actualización de stock.
 
 **Ejemplo cURL**:
 ```bash
-curl -X POST http://localhost:8080/api/cart/checkout
+curl -X POST http://localhost:8080/api/cart/checkout \
+  -b cookies.txt \
+  -H "X-XSRF-TOKEN: $XSRF_TOKEN"
 ```
 
 #### `DELETE /api/cart`
 Vacía completamente el carrito de compras.
 
-- **Acceso**: Público
+- **Acceso**: Público (Requiere token CSRF)
+- **Headers**: `X-XSRF-TOKEN: <valor_cookie_XSRF-TOKEN>`
 - **Respuestas**:
   - `204 No Content`: Carrito vaciado.
+  - `403 Forbidden`: Token CSRF ausente.
+
+**Ejemplo cURL**:
+```bash
+curl -X DELETE http://localhost:8080/api/cart \
+  -b cookies.txt \
+  -H "X-XSRF-TOKEN: $XSRF_TOKEN"
+```
 
 ---
 

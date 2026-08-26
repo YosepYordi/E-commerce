@@ -3,7 +3,7 @@
 
 - **Responsable**: `@kiba450parodi-ux` (o usuario correspondiente)
 - **Rama origen**: `qa/docs-ci-kiba` -> **Rama destino**: `main`
-- **Ticket / Issue abordado**: Fixes #
+- **Ticket / Issue abordado**: Fixes #5 (Fase 5 - QA, Postman, documentación y CI)
 - **Módulo(s) afectado(s)**: `docs`, `ci`, `postman`, `README`, `CONTRIBUTING`
 
 ---
