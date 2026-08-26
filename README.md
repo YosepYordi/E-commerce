@@ -38,11 +38,13 @@ Sistema de comercio electrónico completo desarrollado con **Java 21**, **Spring
 
 ## 🛠️ Tecnologías Utilizadas
 
-- **Backend**: Java 21, Spring Boot 3.4.0, Spring Data JPA, Hibernate, Spring Security, JJWT (io.jsonwebtoken 0.12.6).
+- **Backend**: Java 21, Spring Boot 3.4.0 (versión oficial estable en Maven Central), Spring Data JPA, Hibernate, Spring Security, JJWT (io.jsonwebtoken 0.12.6).
 - **Base de Datos**: H2 Database (desarrollo/pruebas) y MySQL 8.4 (producción/smoke tests).
 - **Frontend**: HTML5, CSS3 Vanilla, JavaScript ES6 (Fetch API).
 - **Calidad & Automatización**: JUnit 5, Mockito, GitHub Actions CI, Postman.
 - **Contenedores**: Docker & Docker Compose.
+
+> **Nota sobre la versión de Spring Boot**: Se utiliza **Spring Boot 3.4.0** como versión oficial de producción compatible con Java 21. La referencia inicial a 4.1.0 correspondía a una versión no existente en Maven Central.
 
 ---
 
@@ -151,7 +153,7 @@ E-commerce/
 
 ## 🌐 Resumen de Endpoints API & JWT
 
-Para ver la documentación completa y detallada, consulta [`docs/api.md`](file:///c:/Users/HP/E-commerce/docs/api.md).
+Para ver la documentación completa y detallada, consulta [`docs/api.md`](docs/api.md).
 
 | Método | Endpoint | Descripción | Autenticación |
 | :---: | :--- | :--- | :---: |
@@ -180,16 +182,16 @@ Ejecuta la suite completa de 44 pruebas con JUnit 5:
 
 ### Colección de Postman
 La colección completa de pruebas automatizadas de la API se encuentra en:
-- Colección: [`docs/testing/postman/ecommerce.postman_collection.json`](file:///c:/Users/HP/E-commerce/docs/testing/postman/ecommerce.postman_collection.json)
-- Entorno: [`docs/testing/postman/ecommerce.postman_environment.json`](file:///c:/Users/HP/E-commerce/docs/testing/postman/ecommerce.postman_environment.json)
+- Colección: [`docs/testing/postman/Ecommerce.postman_collection.json`](docs/testing/postman/Ecommerce.postman_collection.json)
+- Entorno: [`docs/testing/postman/ecommerce.postman_environment.json`](docs/testing/postman/ecommerce.postman_environment.json)
 
 Puedes importarla en Postman o ejecutarla en consola con Newman:
 ```bash
-newman run docs/testing/postman/ecommerce.postman_collection.json -e docs/testing/postman/ecommerce.postman_environment.json
+newman run docs/testing/postman/Ecommerce.postman_collection.json -e docs/testing/postman/ecommerce.postman_environment.json
 ```
 
 ### Checklist de Navegador
-Revisa la matriz de pruebas manuales de UI en [`docs/testing/browser-checklist.md`](file:///c:/Users/HP/E-commerce/docs/testing/browser-checklist.md).
+Revisa la matriz de pruebas manuales de UI en [`docs/testing/browser-checklist.md`](docs/testing/browser-checklist.md).
 
 ---
 
@@ -201,5 +203,5 @@ Revisa la matriz de pruebas manuales de UI en [`docs/testing/browser-checklist.m
    - `bugfix/nombre-arreglo`
 2. Asegúrate de que los tests locales pasen (`.\mvnw.cmd test`).
 3. Verifica la sintaxis JavaScript (`node --check src/main/resources/static/js/app.js`).
-4. Abre el Pull Request usando la plantilla estandarizada [`PULL_REQUEST_TEMPLATE.md`](file:///c:/Users/HP/E-commerce/.github/PULL_REQUEST_TEMPLATE.md).
+4. Abre el Pull Request vinculando el issue correspondiente (`Closes #5`) usando la plantilla estandarizada [`PULL_REQUEST_TEMPLATE.md`](.github/PULL_REQUEST_TEMPLATE.md).
 5. Confirma que todos los checks de GitHub Actions CI queden en **verde** antes de solicitar revisión.

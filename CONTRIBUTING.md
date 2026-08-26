@@ -92,7 +92,7 @@ git commit -m "test(service): incluir pruebas unitarias para validacion de stock
 3. **Abre el Pull Request en GitHub**:
    - Asigna como rama destino (**Base branch**): `develop`.
    - Selecciona tu rama (**Compare branch**): `feature/tu-rama`.
-   - Completa todos los campos obligatorios requeridos por la plantilla [`.github/PULL_REQUEST_TEMPLATE.md`](file:///.github/PULL_REQUEST_TEMPLATE.md).
+   - Completa todos los campos obligatorios requeridos por la plantilla [`.github/PULL_REQUEST_TEMPLATE.md`](.github/PULL_REQUEST_TEMPLATE.md).
    - Asigna al menos **un revisor** del equipo.
 
 ---

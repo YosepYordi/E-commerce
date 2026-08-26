@@ -69,7 +69,11 @@
                   "    if (jsonData.length > 0) {",
                   "        pm.environment.set('productId', jsonData[0].id.toString());",
                   "    }",
-                  "});"
+                  "});",
+                  "var xsrfCookie = pm.cookies.get('XSRF-TOKEN');",
+                  "if (xsrfCookie) {",
+                  "    pm.environment.set('xsrfToken', xsrfCookie);",
+                  "}"
                 ],
                 "type": "text/javascript"
               }
@@ -273,14 +277,18 @@
           }
         },
         {
-          "name": "Error 403 Forbidden (Token Inválido)",
+          "name": "Error 403 Forbidden (CSRF Requerido sin Token)",
           "event": [
             {
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test('Status code is 401 o 403', function () {",
-                  "    pm.expect(pm.response.code).to.be.oneOf([401, 403]);",
+                  "pm.test('Status code is 403 Forbidden', function () {",
+                  "    pm.response.to.have.status(403);",
+                  "});",
+                  "var jsonData = pm.response.json();",
+                  "pm.test('Respuesta contiene error 403', function () {",
+                  "    pm.expect(jsonData.status).to.eql(403);",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -293,20 +301,16 @@
               {
                 "key": "Content-Type",
                 "value": "application/json"
-              },
-              {
-                "key": "Authorization",
-                "value": "Bearer token_invalido_12345"
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"nombre\": \"Producto Forbid\",\n  \"precio\": 15.0,\n  \"stock\": 5\n}"
+              "raw": "{\n  \"productId\": 1,\n  \"cantidad\": 1\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/products",
+              "raw": "{{baseUrl}}/api/cart/add",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "products"]
+              "path": ["api", "cart", "add"]
             }
           }
         },
@@ -383,7 +387,11 @@
                 "exec": [
                   "pm.test('Status code is 200 OK', function () {",
                   "    pm.response.to.have.status(200);",
-                  "});"
+                  "});",
+                  "var xsrfCookie = pm.cookies.get('XSRF-TOKEN');",
+                  "if (xsrfCookie) {",
+                  "    pm.environment.set('xsrfToken', xsrfCookie);",
+                  "}"
                 ],
                 "type": "text/javascript"
               }
@@ -420,6 +428,10 @@
               {
                 "key": "Content-Type",
                 "value": "application/json"
+              },
+              {
+                "key": "X-XSRF-TOKEN",
+                "value": "{{xsrfToken}}"
               }
             ],
             "body": {
@@ -454,6 +466,10 @@
               {
                 "key": "Content-Type",
                 "value": "application/json"
+              },
+              {
+                "key": "X-XSRF-TOKEN",
+                "value": "{{xsrfToken}}"
               }
             ],
             "body": {
@@ -484,7 +500,12 @@
           ],
           "request": {
             "method": "POST",
-            "header": [],
+            "header": [
+              {
+                "key": "X-XSRF-TOKEN",
+                "value": "{{xsrfToken}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/cart/checkout",
               "host": ["{{baseUrl}}"],
@@ -509,7 +530,12 @@
           ],
           "request": {
             "method": "DELETE",
-            "header": [],
+            "header": [
+              {
+                "key": "X-XSRF-TOKEN",
+                "value": "{{xsrfToken}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/cart/items/{{productId}}",
               "host": ["{{baseUrl}}"],
@@ -534,7 +560,12 @@
           ],
           "request": {
             "method": "DELETE",
-            "header": [],
+            "header": [
+              {
+                "key": "X-XSRF-TOKEN",
+                "value": "{{xsrfToken}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/cart",
               "host": ["{{baseUrl}}"],

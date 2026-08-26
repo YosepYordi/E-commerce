@@ -68,7 +68,7 @@ El proyecto incluye **Maven Wrapper**, lo que elimina la necesidad de instalar A
 
 ## 4. 📝 Configuración de `application.properties`
 
-El archivo de propiedades [`src/main/resources/application.properties`](file:///d:/trabajo%20antigravity%20ide/E-commerce/src/main/resources/application.properties) permite cambiar entre la base de datos de desarrollo en memoria (H2) y una base de datos relacional MySQL.
+El archivo de propiedades [`src/main/resources/application.properties`](../src/main/resources/application.properties) permite cambiar entre la base de datos de desarrollo en memoria (H2) y una base de datos relacional MySQL.
 
 ### A. Perfil de Desarrollo (H2 Database en memoria - Por Defecto)
 ```properties
@@ -138,7 +138,7 @@ Al finalizar las pruebas, Maven Surefire genera el reporte:
 
 ## 6. 🤖 Cómo Ejecutar y Probar GitHub Actions
 
-El archivo [`.github/workflows/ci.yml`](file:///d:/trabajo%20antigravity%20ide/E-commerce/.github/workflows/ci.yml) define las acciones automáticas de integración continua.
+El archivo [`.github/workflows/ci.yml`](../.github/workflows/ci.yml) define las acciones automáticas de integración continua.
 
 ### A. Ejecución Automática en GitHub
 1. Al subir cambios a las ramas `main`, `master` o `develop`, o al abrir un Pull Request hacia ellas, GitHub Actions disparará el pipeline automáticamente.
